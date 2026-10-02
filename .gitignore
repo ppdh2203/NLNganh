@@ -1,0 +1,5 @@
+# File chứa thông tin bí mật
+.env
+
+# Thư viện Composer
+/vendor/

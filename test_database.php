@@ -1,8 +1,7 @@
 <?php
 
-// Nạp autoload để PHP tìm được class Database
-require_once __DIR__ . '/vendor/autoload.php';
-
+// Khởi động project: autoload + nạp biến từ .env
+require_once __DIR__ . '/bootstrap.php';
 use App\Core\Database;
 
 try {
