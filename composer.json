@@ -1,0 +1,13 @@
+{
+    "name": "scholarship/scholarship-system",
+    "description": "Scholarship Management System",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require": {
+        "bramus/router": "^1.6"
+    }
+}
