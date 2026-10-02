@@ -1,10 +1,17 @@
 <?php
 
-// Nạp Composer autoload để PHP tự tìm các class trong project
-require_once __DIR__ . '/../vendor/autoload.php';
+declare(strict_types=1);
+
+// Khởi động hệ thống: nạp autoload và biến môi trường .env
+require_once __DIR__ . '/../bootstrap.php';
 
 use Bramus\Router\Router;
 
+// Tạo Router
 $router = new Router();
 
-require_once 
+// Nạp danh sách route của hệ thống
+require_once __DIR__ . '/../routes/web.php';
+
+// Bắt đầu xử lý route
+$router->run();
