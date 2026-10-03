@@ -1,139 +1,212 @@
 <section class="register-section">
     <div class="register-container">
+        <!-- Tiêu đề -->
+        <div class="register-header">
+            <h1>Create your account</h1>
+            <p>Start your scholarship journey today.</p>
+        </div>
 
-        <h1>Đăng ký tài khoản</h1>
-
-        <!-- Khu vực chứa 2 form -->
         <div class="register-forms">
-
-            <!-- Form đăng ký Sinh viên -->
-            <form id="student-form" action="/register" method="POST">
+            <!-- =========================
+                 FORM STUDENT
+            ========================== -->
+            <form id="student-form" class="register-form" action="/register" method="POST">
                 <input type="hidden" name="role" value="student">
 
-                <div>
-                    <label for="student-full-name">Họ và tên</label>
-                    <input type="text" id="student-full-name" name="full_name" placeholder="Nhập họ và tên của bạn" required>
+                <div class="form-group">
+                        <label for="student-full-name">Full name</label>
+                        <input type="text" id="student-full-name" name="full_name" placeholder="Enter your full name" required>
                 </div>
 
-                <div>
-                    <label for="student-email">Email</label>
-                    <input type="email" id="student-email" name="email" placeholder="Nhập email của bạn" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student-address">Address</label>
+                        <input type="text" id="student-address" name="address" placeholder="Enter your address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-email">Email</label>
+                        <input type="email" id="student-email" name="email" placeholder="Enter your email" required>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="student-school">Trường</label>
-                    <input type="text" id="student-school" name="school" placeholder="Nhập trường của bạn" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student-school">School</label>
+                        <input type="text" id="student-school" name="school" placeholder="Enter your school" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-major">Major</label>
+                        <input type="text" id="student-major" name="major" placeholder="Enter your major" required>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="student-major">Ngành học</label>
-                    <input type="text" id="student-major" name="major" placeholder="Nhập ngành của bạn" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student-cohort">Cohort</label>
+                        <input type="number" id="student-cohort" name="cohort" placeholder="Example: 49" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-phone">Phone number</label>
+                        <input type="tel" id="student-phone" name="phone" placeholder="Enter your phone number" required>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="student-cohort">Khóa</label>
-                    <input type="number" id="student-cohort" name="cohort" placeholder="Ví dụ: 49" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student-password">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="student-password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" aria-label="Show password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-password-confirmation">Confirm password</label>
+                        <div class="password-field">
+                        <input type="password" id="student-password-confirmation" name="password_confirmation" placeholder="Enter your password again" required>
+                        <button type="button" class="password-toggle" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    </div>
                 </div>
 
-                <div>
-                    <label for="student-address">Địa chỉ</label>
-                    <input type="text" id="student-address" name="address" placeholder="Nhập địa chỉ của bạn" required>
-                </div>
-
-                <div>
-                    <label for="student-phone">Số điện thoại</label>
-                    <input type="tel" id="student-phone" name="phone" placeholder="Nhập số điện thoại của bạn" required>
-                </div>
-
-                <div>
-                    <label for="student-password">Mật khẩu</label>
-                    <input type="password" id="student-password" name="password" placeholder="Nhập mật khẩu của bạn" required>
-                </div>
-
-                <div>
-                    <label for="student-password-confirmation">Nhập lại mật khẩu</label>
-                    <input type="password" id="student-password-confirmation" name="password_confirmation" placeholder="Nhập lại mật khẩu của bạn" required>
-                </div>
-
-                <button type="submit">Đăng ký</button>
+                <button type="submit" class="register-submit">Create account</button>
             </form>
 
-            <!-- Form đăng ký Nhà cung cấp -->
-            <form id="provider-form" action="/register" method="POST" enctype="multipart/form-data" hidden>
+            <!-- =========================
+                 FORM PROVIDER
+            ========================== -->
+            <form id="provider-form" class="register-form" action="/register" method="POST" enctype="multipart/form-data" hidden>
                 <input type="hidden" name="role" value="provider">
 
-                <div>
-                    <label for="provider-name">Tên nhà cung cấp</label>
-                    <input type="text" id="provider-name" name="provider_name" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provider-name">Provider name</label>
+                        <input type="text" id="provider-name" name="provider_name" placeholder="Enter provider name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="organization">Organization</label>
+                        <input type="text" id="organization" name="organization" placeholder="Enter organization name">
+                    </div>
                 </div>
 
-                <div>
-                    <label for="organization">Tổ chức</label>
-                    <input type="text" id="organization" name="organization">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provider-email">Login email</label>
+                        <input type="email" id="provider-email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact-email">Contact email</label>
+                        <input type="email" id="contact-email" name="contact_email" placeholder="Enter contact email">
+                    </div>
                 </div>
 
-                <div>
-                    <label for="provider-email">Email đăng nhập</label>
-                    <input type="email" id="provider-email" name="email" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provider-phone">Phone number</label>
+                        <input type="tel" id="provider-phone" name="phone" placeholder="Enter phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verification-document">Verification document</label>
+                        <input type="file"
+                               id="verification-document"
+                               name="verification_document"
+                               accept=".pdf,.jpg,.jpeg,.png"
+                               required>
+                        <small>PDF, JPG, JPEG or PNG.</small>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="contact-email">Email liên hệ</label>
-                    <input type="email" id="contact-email" name="contact_email">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provider-password">Password</label>
+                        <input type="password" id="provider-password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="provider-password-confirmation">Confirm password</label>
+                        <input type="password" id="provider-password-confirmation" name="password_confirmation" placeholder="Enter your password again" required>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="provider-phone">Số điện thoại</label>
-                    <input type="tel" id="provider-phone" name="phone">
-                </div>
-
-                <div>
-                    <label for="verification-document">Giấy tờ chứng minh tổ chức</label>
-                    <input type="file"
-                        id="verification-document"
-                        name="verification_document"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        required>
-                    <small>Chấp nhận PDF, JPG, JPEG hoặc PNG.</small>
-                </div>
-
-                <div>
-                    <label for="provider-password">Mật khẩu</label>
-                    <input type="password" id="provider-password" name="password" required>
-                </div>
-
-                <div>
-                    <label for="provider-password-confirmation">Nhập lại mật khẩu</label>
-                    <input type="password" id="provider-password-confirmation" name="password_confirmation" required>
-                </div>
-
-                <button type="submit">Đăng ký</button>
+                <button type="submit" class="register-submit">Create account</button>
             </form>
-
         </div>
 
+        <!-- Chuyển Student / Provider -->
         <div class="register-switch">
-            <button type="button" id="student-switch">Bạn là sinh viên?</button>
-            <button type="button" id="provider-switch">Bạn là nhà cung cấp?</button>
+            <button type="button" class="register-switch-btn active" id="student-switch">
+                <i class="bi bi-mortarboard"></i>
+                Student
+            </button>
+
+            <button type="button" class="register-switch-btn" id="provider-switch">
+                <i class="bi bi-building"></i>
+                Scholarship Provider
+            </button>
         </div>
-        <p>Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+
+        <p class="register-login">
+            Already have an account?
+            <a href="/login">Log in</a>
+        </p>
     </div>
 </section>
 
 <script>
-    // JavaScript riêng của trang đăng ký nằm ở đây
+    // Lấy form và nút chuyển loại tài khoản
     const studentForm = document.getElementById('student-form');
     const providerForm = document.getElementById('provider-form');
     const studentSwitch = document.getElementById('student-switch');
     const providerSwitch = document.getElementById('provider-switch');
 
+    // Hiển thị form Student
     studentSwitch.addEventListener('click', function () {
         studentForm.hidden = false;
         providerForm.hidden = true;
+
+        studentSwitch.classList.add('active');
+        providerSwitch.classList.remove('active');
     });
 
+    // Hiển thị form Provider
     providerSwitch.addEventListener('click', function () {
         studentForm.hidden = true;
         providerForm.hidden = false;
+
+        providerSwitch.classList.add('active');
+        studentSwitch.classList.remove('active');
+    });
+
+    // Bật / tắt hiển thị mật khẩu
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+
+    passwordToggles.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = button.parentElement.querySelector('input');
+            const icon = button.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+                button.setAttribute('aria-label', 'Hide password');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+                button.setAttribute('aria-label', 'Show password');
+            }
+        });
     });
 </script>

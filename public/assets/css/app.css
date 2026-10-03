@@ -1,0 +1,632 @@
+:root {
+    --primary: #6052db;
+    --primary-dark: #3c3394;
+    --navy: #17152B;
+    --text: #25233A;
+    --text-muted: #6F6B80;
+    --background: #F8F7FC;
+    --light-blue: #F0EEFF;
+    --white: #FFFFFF;
+    --border: #E7E4F0;
+    --accent: #F4B740;
+}
+
+body {
+    color: var(--text);
+    background-color: var(--background);
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.top-bar {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    background-color: var(--primary-dark);
+}
+
+.top-bar-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+}
+
+.top-role-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 15px;
+    color: var(--white);
+    background-color: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.top-role-btn:hover,
+.top-role-btn.active {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================
+   HEADER
+========================= */
+.site-header {
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+
+
+.site-header .navbar {
+    min-height: 72px;
+}
+
+.site-header .navbar-brand {
+    color: var(--primary);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.site-header .navbar-brand:hover {
+    color: var(--primary-dark);
+}
+
+.site-header .nav-link {
+    margin: 0 8px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.site-header .nav-link:hover {
+    color: var(--primary);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-login,
+.btn-register {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-login {
+    color: var(--primary);
+    background-color: var(--white);
+    border: 1px solid var(--primary);
+}
+
+.btn-login:hover {
+    color: var(--white);
+    background-color: var(--primary);
+}
+
+.btn-register {
+    color: var(--white);
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-register:hover {
+    color: var(--white);
+    background-color: var(--primary-dark);
+}
+
+@media (max-width: 991px) {
+    .header-actions {
+        margin-top: 12px;
+        padding-bottom: 12px;
+    }
+}
+
+/* logo */
+.site-header .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-dark);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.site-logo-icon {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+/* =========================
+   FOOTER
+========================= */
+/* Mạng xã hội */
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.footer-social a {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 17px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-social a:hover {
+    color: var(--primary-dark);
+    background-color: var(--white);
+    border-color: var(--white);
+    transform: translateY(-2px);
+}
+.site-footer {
+    margin-top: 60px;
+    padding: 55px 0 0;
+    color: var(--white);
+    background-color: var(--navy);
+}
+
+/* Logo và tên website */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.footer-logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+/* Mô tả website */
+.footer-description {
+    max-width: 340px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.7;
+}
+
+/* Tiêu đề từng cột */
+.site-footer h6 {
+    margin-bottom: 18px;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Các đường dẫn */
+.footer-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--white);
+}
+
+/* Mạng xã hội */
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.footer-social a {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 17px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-social a:hover {
+    color: var(--primary-dark);
+    background-color: var(--white);
+    border-color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* Copyright */
+.footer-bottom {
+    margin-top: 20px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 14px;
+}
+
+/*Đăng ký */
+/* =========================
+   REGISTER PAGE
+========================= */
+.register-section {
+    padding: 60px 20px;
+    background-color: var(--background);
+}
+
+.register-container {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 38px 42px;
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(60, 51, 148, 0.08);
+}
+
+/* Tiêu đề */
+.register-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.register-header h1 {
+    margin-bottom: 8px;
+    color: var(--text);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.register-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* =========================
+   FORM
+========================= */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    background-color: var(--white);
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* Khi bấm vào ô nhập */
+.form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(96, 82, 219, 0.12);
+}
+
+/* Placeholder */
+.form-group input::placeholder {
+    color: #aaa6b8;
+}
+
+/* Dòng chú thích file */
+.form-group small {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* =========================
+   CREATE ACCOUNT BUTTON
+========================= */
+.register-submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: var(--white);
+    background-color: var(--primary);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.register-submit:hover {
+    background-color: var(--primary-dark);
+}
+
+/* =========================
+   STUDENT / PROVIDER SWITCH
+========================= */
+.register-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.register-switch-btn {
+    padding: 11px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    background-color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.register-switch-btn i {
+    margin-right: 5px;
+}
+
+.register-switch-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Loại tài khoản đang được chọn */
+.register-switch-btn.active {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: var(--light-blue);
+}
+
+/* =========================
+   LOGIN LINK
+========================= */
+.register-login {
+    margin: 22px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.register-login a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.register-login a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 576px) {
+    .register-section {
+        padding: 30px 15px;
+    }
+
+    .register-container {
+        padding: 28px 20px;
+    }
+
+    .register-header h1 {
+        font-size: 26px;
+    }
+
+    .register-switch {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Điện thoại tự chuyển về 1 cột */
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+.register-forms {
+    min-height: 410px;
+}
+
+/*show password */
+/* =========================
+   PASSWORD
+========================= */
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 45px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    transform: translateY(-50%);
+    padding: 0;
+    border: none;
+    color: var(--text-muted);
+    background: transparent;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+/* =========================
+   LOGIN PAGE
+========================= */
+.login-section {
+    min-height: 600px;
+    padding: 70px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: var(--background);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px 42px;
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(60, 51, 148, 0.08);
+}
+
+/* Tiêu đề */
+.login-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.login-header h1 {
+    margin-bottom: 8px;
+    color: var(--text);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.login-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* Password + Forgot password */
+.login-password-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+.login-password-label label {
+    margin-bottom: 0;
+}
+
+.login-password-label a {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.login-password-label a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Nút đăng nhập */
+.login-submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: var(--white);
+    background-color: var(--primary);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-submit:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Link đăng ký */
+.login-register {
+    margin: 24px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.login-register a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-register a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .login-section {
+        padding: 40px 15px;
+    }
+
+    .login-container {
+        padding: 30px 20px;
+    }
+
+    .login-header h1 {
+        font-size: 26px;
+    }
+}
