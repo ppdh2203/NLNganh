@@ -170,6 +170,19 @@
     const studentSwitch = document.getElementById('student-switch');
     const providerSwitch = document.getElementById('provider-switch');
 
+    // Lấy role được truyền từ URL: /register?role=student hoặc provider
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
+
+    // Nếu chọn Provider từ Home thì mở sẵn form Provider
+    if (role === 'provider') {
+        studentForm.hidden = true;
+        providerForm.hidden = false;
+
+        studentSwitch.classList.remove('active');
+        providerSwitch.classList.add('active');
+    }
+
     // Hiển thị form Student
     studentSwitch.addEventListener('click', function () {
         studentForm.hidden = false;

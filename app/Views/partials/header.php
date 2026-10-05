@@ -37,43 +37,117 @@
 </header>
 
 <script>
-    // Lấy các phần tử cần thay đổi trên Header
-    const mainMenu = document.getElementById('main-menu');
-    const studentHeaderBtn = document.getElementById('student-header-btn');
-    const providerHeaderBtn = document.getElementById('provider-header-btn');
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy các phần tử cần thay đổi trên Header
+        const mainMenu = document.getElementById('main-menu');
+        const studentHeaderBtn = document.getElementById('student-header-btn');
+        const providerHeaderBtn = document.getElementById('provider-header-btn');
 
-    // Menu dành cho người xem là sinh viên
-    const studentMenu = `
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
-        <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
-        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-    `;
+        // Lấy khu vực How It Works nếu đang ở trang Home
+        const howSteps = document.getElementById('how-steps');
 
-    // Menu dành cho người xem là nhà cung cấp học bổng
-    const providerMenu = `
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
-        <li class="nav-item"><a class="nav-link" href="/how-it-works">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
-    `;
+        // Menu dành cho sinh viên
+        const studentMenu = `
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+            <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+        `;
 
-    // Mặc định hiển thị giao diện dành cho sinh viên
-    mainMenu.innerHTML = studentMenu;
+        // Menu dành cho nhà cung cấp học bổng
+        const providerMenu = `
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
+            <li class="nav-item"><a class="nav-link" href="/how-it-works">How It Works</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+        `;
 
-    studentHeaderBtn.addEventListener('click', function () {
+        // Các bước dành cho sinh viên
+        const studentSteps = `
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <h3>Create an Account</h3>
+                <p>Create your student account to get started.</p>
+            </div>
+
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3>Find Scholarships</h3>
+                <p>Explore scholarship opportunities that suit you.</p>
+            </div>
+
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-file-earmark-check"></i>
+                </div>
+                <h3>Submit Application</h3>
+                <p>Complete and submit your scholarship application.</p>
+            </div>
+        `;
+
+        // Các bước dành cho nhà cung cấp học bổng
+        const providerSteps = `
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-building-add"></i>
+                </div>
+                <h3>Create an Account</h3>
+                <p>Register your organization as a scholarship provider.</p>
+            </div>
+
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-mortarboard"></i>
+                </div>
+                <h3>Create Scholarships</h3>
+                <p>Create scholarship opportunities for students.</p>
+            </div>
+
+            <div class="how-step">
+                <div class="how-step-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h3>Review Applications</h3>
+                <p>Review and evaluate submitted student applications.</p>
+            </div>
+        `;
+
+        // Mặc định hiển thị giao diện dành cho sinh viên
         mainMenu.innerHTML = studentMenu;
 
-        // Đổi trạng thái nút đang được chọn
-        studentHeaderBtn.classList.add('active');
-        providerHeaderBtn.classList.remove('active');
-    });
+        // Chỉ thay How It Works khi trang hiện tại có khu vực này
+        if (howSteps) {
+            howSteps.innerHTML = studentSteps;
+        }
 
-    providerHeaderBtn.addEventListener('click', function () {
-        mainMenu.innerHTML = providerMenu;
+        studentHeaderBtn.addEventListener('click', function () {
+            mainMenu.innerHTML = studentMenu;
 
-        // Đổi trạng thái nút đang được chọn
-        providerHeaderBtn.classList.add('active');
-        studentHeaderBtn.classList.remove('active');
+            // Nếu đang ở Home thì đổi How It Works sang Student
+            if (howSteps) {
+                howSteps.innerHTML = studentSteps;
+            }
+
+            // Đổi trạng thái nút đang được chọn
+            studentHeaderBtn.classList.add('active');
+            providerHeaderBtn.classList.remove('active');
+        });
+
+        providerHeaderBtn.addEventListener('click', function () {
+            mainMenu.innerHTML = providerMenu;
+
+            // Nếu đang ở Home thì đổi How It Works sang Provider
+            if (howSteps) {
+                howSteps.innerHTML = providerSteps;
+            }
+
+            // Đổi trạng thái nút đang được chọn
+            providerHeaderBtn.classList.add('active');
+            studentHeaderBtn.classList.remove('active');
+        });
     });
 </script>
