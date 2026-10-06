@@ -1079,3 +1079,386 @@ body {
         gap: 25px;
     }
 }
+
+/*about us*/
+/* =========================
+   ABOUT PAGE
+========================= */
+.about-hero {
+    padding: 90px 20px;
+    background-color: var(--light-blue);
+    text-align: center;
+}
+
+.about-hero-content {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.about-label {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.about-hero h1 {
+    margin-bottom: 18px;
+    color: var(--text);
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.about-hero p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* Our Mission */
+.about-mission {
+    padding: 75px 20px;
+    background-color: var(--white);
+}
+
+.about-mission-content {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+
+.about-mission-icon {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--white);
+    background-color: var(--primary);
+    font-size: 45px;
+}
+
+.about-mission h2 {
+    margin-bottom: 15px;
+    color: var(--text);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.about-mission p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 65px 15px;
+    }
+
+    .about-hero h1 {
+        font-size: 34px;
+    }
+
+    .about-mission {
+        padding: 50px 15px;
+    }
+
+    .about-mission-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+    }
+}
+
+/* =========================
+   CONTACT PAGE
+========================= */
+
+/* Phần giới thiệu đầu trang */
+.contact-hero {
+    padding: 90px 20px;
+    background-color: var(--light-blue);
+    text-align: center;
+}
+
+.contact-hero-content {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.contact-label {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.contact-hero h1 {
+    margin-bottom: 18px;
+    color: var(--text);
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.contact-hero p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* Nội dung Contact */
+.contact-section {
+    padding: 75px 20px;
+    background-color: var(--white);
+}
+
+.contact-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: start;
+}
+
+/* Thông tin liên hệ bên trái */
+.contact-info h2 {
+    margin-bottom: 14px;
+    color: var(--text);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.contact-info > p {
+    margin-bottom: 30px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.contact-info-item {
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.contact-info-item > i {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--primary);
+    background-color: var(--light-blue);
+    font-size: 20px;
+}
+
+.contact-info-item h3 {
+    margin-bottom: 3px;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.contact-info-item p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* Form bên phải */
+.contact-form-wrapper {
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background-color: var(--white);
+    box-shadow: 0 8px 30px rgba(60, 51, 148, 0.08);
+}
+
+.contact-form-wrapper h2 {
+    margin-bottom: 25px;
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.contact-form .form-label {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.contact-form .form-control {
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.contact-form .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(96, 82, 219, 0.12);
+}
+
+/* Nút gửi */
+.contact-submit-btn {
+    width: 100%;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 8px;
+    color: var(--white);
+    background-color: var(--primary);
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.contact-submit-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contact-hero {
+        padding: 65px 15px;
+    }
+
+    .contact-hero h1 {
+        font-size: 34px;
+    }
+
+    .contact-section {
+        padding: 50px 15px;
+    }
+
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .contact-form-wrapper {
+        padding: 24px;
+    }
+}
+
+/*how it works*/
+/* =========================
+   PROVIDER - HOW IT WORKS
+========================= */
+.provider-how-hero {
+    background-color: var(--light-blue);
+}
+
+.provider-how-hero-content {
+    max-width: 750px;
+}
+
+.provider-how-hero p {
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.provider-how-label,
+.provider-step-number {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+/* Card từng bước */
+.provider-process-step {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background-color: var(--white);
+    transition: 0.2s;
+}
+
+.provider-process-step:hover {
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(60, 51, 148, 0.1);
+    transform: translateY(-4px);
+}
+
+/* Icon của từng bước */
+.provider-step-icon {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--primary);
+    background-color: var(--light-blue);
+    font-size: 24px;
+}
+
+/* CTA cuối trang */
+.provider-how-cta > .container > div {
+    color: var(--white);
+    background-color: var(--primary-dark);
+}
+
+.provider-how-cta-btn {
+    color: var(--primary-dark);
+    background-color: var(--white);
+    font-weight: 600;
+}
+
+.provider-how-cta-btn:hover {
+    color: var(--white);
+    background-color: var(--primary);
+}
+
+/*404*/
+/* =========================
+   ERROR 404
+========================= */
+.error-icon {
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--primary);
+    background-color: var(--light-blue);
+    font-size: 40px;
+}
+
+.error-code {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.error-home-btn {
+    color: var(--white);
+    background-color: var(--primary);
+    font-weight: 600;
+}
+
+.error-home-btn:hover {
+    color: var(--white);
+    background-color: var(--primary-dark);
+}

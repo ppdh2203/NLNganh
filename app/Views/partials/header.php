@@ -116,15 +116,35 @@
             </div>
         `;
 
-        // Mặc định hiển thị giao diện dành cho sinh viên
-        mainMenu.innerHTML = studentMenu;
+        // Lấy giao diện đã chọn trước đó, nếu chưa có thì mặc định là Student
+        const selectedRole = sessionStorage.getItem('publicRole') || 'student';
 
-        // Chỉ thay How It Works khi trang hiện tại có khu vực này
-        if (howSteps) {
-            howSteps.innerHTML = studentSteps;
+        // Hiển thị đúng giao diện đã chọn khi trang được tải
+        if (selectedRole === 'provider') {
+            mainMenu.innerHTML = providerMenu;
+
+            if (howSteps) {
+                howSteps.innerHTML = providerSteps;
+            }
+
+            providerHeaderBtn.classList.add('active');
+            studentHeaderBtn.classList.remove('active');
+        } else {
+            mainMenu.innerHTML = studentMenu;
+
+            if (howSteps) {
+                howSteps.innerHTML = studentSteps;
+            }
+
+            studentHeaderBtn.classList.add('active');
+            providerHeaderBtn.classList.remove('active');
         }
 
+        // Khi chọn giao diện Student
         studentHeaderBtn.addEventListener('click', function () {
+            // Ghi nhớ lựa chọn Student
+            sessionStorage.setItem('publicRole', 'student');
+
             mainMenu.innerHTML = studentMenu;
 
             // Nếu đang ở Home thì đổi How It Works sang Student
@@ -132,12 +152,15 @@
                 howSteps.innerHTML = studentSteps;
             }
 
-            // Đổi trạng thái nút đang được chọn
             studentHeaderBtn.classList.add('active');
             providerHeaderBtn.classList.remove('active');
         });
 
+        // Khi chọn giao diện Provider
         providerHeaderBtn.addEventListener('click', function () {
+            // Ghi nhớ lựa chọn Provider
+            sessionStorage.setItem('publicRole', 'provider');
+
             mainMenu.innerHTML = providerMenu;
 
             // Nếu đang ở Home thì đổi How It Works sang Provider
@@ -145,7 +168,6 @@
                 howSteps.innerHTML = providerSteps;
             }
 
-            // Đổi trạng thái nút đang được chọn
             providerHeaderBtn.classList.add('active');
             studentHeaderBtn.classList.remove('active');
         });

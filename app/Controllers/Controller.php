@@ -23,4 +23,13 @@ class Controller
         // Đưa $content vào khung giao diện chung
         require __DIR__ . '/../Views/layouts/main.php';
     }
+
+    public function sendNotFound(): void
+    {
+        // Trả đúng HTTP status 404
+        http_response_code(404);
+
+        // Hiển thị giao diện trang 404
+        $this->view('errors/404');
+    }
 }
