@@ -27,11 +27,22 @@ if (!empty($_SESSION['user_id'])) {
 
 <!-- Thanh điều hướng phụ phía trên Header -->
 <div class="top-bar">
-    <div class="container">
-        <div class="top-bar-links">
-            <button type="button" class="top-role-btn active" id="student-header-btn">For Students</button>
-            <button type="button" class="top-role-btn" id="provider-header-btn">For Scholarship Providers</button>
-        </div>
+    <div class="container-fluid px-4 px-xl-5">
+        <?php if (empty($_SESSION['user_id'])): ?>
+            <div class="top-bar-links">
+                <button type="button" class="top-role-btn active" id="student-header-btn">For Students</button>
+                <button type="button" class="top-role-btn" id="provider-header-btn">For Scholarship Providers</button>
+            </div>
+        <?php else: ?>
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <a href="mailto:admin@example.com" class="text-white text-decoration-none small">
+                    <i class="bi bi-envelope me-1"></i> ppdh2005@gmail.com
+                </a>
+                <a href="tel:0123456789" class="text-white text-decoration-none small">
+                    <i class="bi bi-telephone me-1"></i> 0775843120
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -205,8 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
     // Khôi phục giao diện đã chọn
-    const selectedRole = sessionStorage.getItem('publicRole') || 'student';
+    // Vai trò đăng nhập lấy từ session PHP
+    const loggedInRole = <?= json_encode($_SESSION['user_role'] ?? null) ?>;
 
+    // Guest dùng lựa chọn công khai, người đăng nhập dùng vai trò thật
+    const selectedRole = loggedInRole
+        ? loggedInRole.toLowerCase()
+        : (sessionStorage.getItem('publicRole') || 'student');
     function updateRole(role) {
         const isProvider = role === 'provider';
 
@@ -218,22 +234,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Cập nhật nút đang được chọn
-        studentHeaderBtn.classList.toggle('active', !isProvider);
-        providerHeaderBtn.classList.toggle('active', isProvider);
+        if (studentHeaderBtn && providerHeaderBtn) {
+            studentHeaderBtn.classList.toggle('active', !isProvider);
+            providerHeaderBtn.classList.toggle('active', isProvider);
+        }
     }
 
     updateRole(selectedRole);
 
     // Chuyển giao diện Student
-    studentHeaderBtn.addEventListener('click', function () {
-        sessionStorage.setItem('publicRole', 'student');
-        updateRole('student');
-    });
+    // Chỉ Guest mới được chuyển đổi giao diện
+    if (!loggedInRole && studentHeaderBtn && providerHeaderBtn) {
+        studentHeaderBtn.addEventListener('click', function () {
+            sessionStorage.setItem('publicRole', 'student');
+            updateRole('student');
+        });
 
-    // Chuyển giao diện Provider
-    providerHeaderBtn.addEventListener('click', function () {
-        sessionStorage.setItem('publicRole', 'provider');
-        updateRole('provider');
-    });
+        providerHeaderBtn.addEventListener('click', function () {
+            sessionStorage.setItem('publicRole', 'provider');
+            updateRole('provider');
+        });
+    }
 });
 </script>

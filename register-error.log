@@ -1,0 +1,1 @@
+[REGISTER ERROR] SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value

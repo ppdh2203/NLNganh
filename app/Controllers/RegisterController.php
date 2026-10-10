@@ -196,7 +196,7 @@ class RegisterController extends Controller
             }
 
             // Không hiển thị chi tiết lỗi database cho người dùng
-            error_log($e->getMessage());
+            error_log('[REGISTER ERROR] ' . $e->getMessage());
             http_response_code(500);
             exit('Không thể đăng ký tài khoản. Vui lòng thử lại.');
         }

@@ -3,7 +3,7 @@
         'name' => 'scholarship/scholarship-system',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '8a0be698bfcdbde702171dd5e873af481c7c5655',
+        'reference' => 'dd071209a3fbc255b89571e8e424175d318f0259',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'scholarship/scholarship-system' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '8a0be698bfcdbde702171dd5e873af481c7c5655',
+            'reference' => 'dd071209a3fbc255b89571e8e424175d318f0259',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
