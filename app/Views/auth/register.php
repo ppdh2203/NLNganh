@@ -11,11 +11,21 @@
                  FORM STUDENT
             ========================== -->
             <form id="student-form" class="register-form" action="/register" method="POST">
+                <!-- CSRF token chống giả mạo yêu cầu -->
+                <input type="hidden" name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                 <input type="hidden" name="role" value="student">
 
-                <div class="form-group">
-                        <label for="student-full-name">Full name</label>
-                        <input type="text" id="student-full-name" name="full_name" placeholder="Enter your full name" required>
+                <div class="form-row">
+                    <div class="form-group">
+                            <label for="student-full-name">Full name</label>
+                            <input type="text" id="student-full-name" name="full_name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-code">Student code</label>
+                        <input type="text" id="student-code" name="student_code" placeholder="Enter your student code">
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -84,6 +94,9 @@
                  FORM PROVIDER
             ========================== -->
             <form id="provider-form" class="register-form" action="/register" method="POST" enctype="multipart/form-data" hidden>
+                <!-- CSRF token chống giả mạo yêu cầu -->
+                <input type="hidden" name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                 <input type="hidden" name="role" value="provider">
 
                 <div class="form-row">

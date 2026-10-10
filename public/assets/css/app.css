@@ -145,6 +145,30 @@ body {
     object-fit: contain;
 }
 
+/* Căn Header trên desktop */
+@media (min-width: 992px) {
+    .site-header .navbar > .container-fluid {
+        position: relative;
+    }
+
+    .site-header .navbar-brand {
+        margin-right: auto;
+    }
+
+    .site-header #main-navbar {
+        flex-grow: 0;
+    }
+
+    .site-header #main-menu {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .site-header .header-actions {
+        margin-left: auto;
+    }
+}
 /* =========================
    FOOTER
 ========================= */

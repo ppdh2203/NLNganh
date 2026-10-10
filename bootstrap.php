@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Nạp Composer Autoload để sử dụng các thư viện và class trong project
 require_once __DIR__ . '/vendor/autoload.php';

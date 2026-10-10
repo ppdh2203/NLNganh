@@ -22,6 +22,9 @@ CREATE TABLE students (
     student_code VARCHAR(50) NULL,
     student_school VARCHAR(150) NOT NULL,
     student_major VARCHAR(150) NOT NULL,
+    student_address VARCHAR(255) NOT NULL,
+    student_cohort INT UNSIGNED NOT NULL,
+    student_phone VARCHAR(20) NOT NULL,
 
     CONSTRAINT fk_students_user
         FOREIGN KEY (user_id)

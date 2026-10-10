@@ -8,7 +8,10 @@
         </div>
 
         <form action="/login" method="POST" class="login-form">
-
+        <!-- Token bảo vệ form đăng nhập -->
+            <input type="hidden"
+                name="csrf_token"
+                value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="form-group">
                 <label for="login-email">Email</label>
                 <input type="email"
