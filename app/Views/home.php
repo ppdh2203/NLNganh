@@ -123,88 +123,34 @@
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
-
+            
             <div class="featured-grid">
-                <!-- Scholarship 1 -->
-                <article class="scholarship-card">
-                    <div class="scholarship-card-icon">
-                        <i class="bi bi-mortarboard"></i>
-                    </div>
-
-                    <h3>Academic Excellence Scholarship</h3>
-                    <p class="scholarship-provider">Future Education Foundation</p>
-
-                    <div class="scholarship-info">
-                        <span>
-                            <i class="bi bi-cash-coin"></i>
-                            10,000,000 VND
-                        </span>
-
-                        <span>
-                            <i class="bi bi-calendar-event"></i>
-                            Dec 30, 2026
-                        </span>
-                    </div>
-
-                    <a href="#" class="scholarship-detail">
-                        View Details
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </article>
-
-                <!-- Scholarship 2 -->
-                <article class="scholarship-card">
-                    <div class="scholarship-card-icon">
-                        <i class="bi bi-mortarboard"></i>
-                    </div>
-
-                    <h3>Future Technology Scholarship</h3>
-                    <p class="scholarship-provider">Technology Development Fund</p>
-
-                    <div class="scholarship-info">
-                        <span>
-                            <i class="bi bi-cash-coin"></i>
-                            15,000,000 VND
-                        </span>
-
-                        <span>
-                            <i class="bi bi-calendar-event"></i>
-                            Jan 15, 2027
-                        </span>
-                    </div>
-
-                    <a href="#" class="scholarship-detail">
-                        View Details
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </article>
-
-                <!-- Scholarship 3 -->
-                <article class="scholarship-card">
-                    <div class="scholarship-card-icon">
-                        <i class="bi bi-mortarboard"></i>
-                    </div>
-
-                    <h3>Student Support Scholarship</h3>
-                    <p class="scholarship-provider">Education Support Organization</p>
-
-                    <div class="scholarship-info">
-                        <span>
-                            <i class="bi bi-cash-coin"></i>
-                            8,000,000 VND
-                        </span>
-
-                        <span>
-                            <i class="bi bi-calendar-event"></i>
-                            Feb 10, 2027
-                        </span>
-                    </div>
-
-                    <a href="#" class="scholarship-detail">
-                        View Details
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </article>
+                <?php if (!empty($scholarships)): ?>
+                    <?php foreach ($scholarships as $scholarship): ?>
+                        <article class="scholarship-card">
+                            <div class="scholarship-card-icon">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+                            <h3><?= htmlspecialchars($scholarship['scholarship_name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <p class="scholarship-provider"><?= htmlspecialchars($scholarship['provider_name'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <div class="scholarship-info">
+                                <span>
+                                    <i class="bi bi-cash-coin"></i>
+                                    <?= number_format((float)$scholarship['amount'], 0, ',', '.') ?> VND
+                                </span>
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <?= date('d/m/Y', strtotime($scholarship['end_date'])) ?>
+                                </span>
+                            </div>
+                            <a href="/scholarships/<?= (int)$scholarship['scholarship_id'] ?>" class="scholarship-detail">
+                                View Details <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </article>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-muted">Hiện chưa có học bổng nào đang mở nhận hồ sơ.</p>
+                <?php endif; ?>
             </div>
         </div>
     </section>
