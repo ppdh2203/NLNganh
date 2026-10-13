@@ -18,8 +18,8 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                            <label for="student-full-name">Full name</label>
-                            <input type="text" id="student-full-name" name="full_name" placeholder="Enter your full name" required>
+                        <label for="student-full-name">Full name</label>
+                        <input type="text" id="student-full-name" name="full_name" placeholder="Enter your full name" required>
                     </div>
 
                     <div class="form-group">
@@ -78,11 +78,11 @@
                     <div class="form-group">
                         <label for="student-password-confirmation">Confirm password</label>
                         <div class="password-field">
-                        <input type="password" id="student-password-confirmation" name="password_confirmation" placeholder="Enter your password again" required>
-                        <button type="button" class="password-toggle" aria-label="Show password">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
+                            <input type="password" id="student-password-confirmation" name="password_confirmation" placeholder="Enter your password again" required>
+                            <button type="button" class="password-toggle" aria-label="Show password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
 
                     </div>
                 </div>
@@ -129,15 +129,22 @@
                         <input type="tel" id="provider-phone" name="phone" placeholder="Enter phone number">
                     </div>
 
+                    <!-- Địa chỉ nhà cung cấp -->
                     <div class="form-group">
-                        <label for="verification-document">Verification document</label>
-                        <input type="file"
-                               id="verification-document"
-                               name="verification_document"
-                               accept=".pdf,.jpg,.jpeg,.png"
-                               required>
-                        <small>PDF, JPG, JPEG or PNG.</small>
+                        <label for="provider-address">Provider address</label>
+                        <input type="text" id="provider-address" name="provider_address" placeholder="Enter provider address" maxlength="255" required>
                     </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="verification-document">Verification document</label>
+                    <input type="file"
+                        id="verification-document"
+                        name="verification_document"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        required>
+                    <small>PDF, JPG, JPEG or PNG.</small>
                 </div>
 
                 <div class="form-row">
@@ -197,7 +204,7 @@
     }
 
     // Hiển thị form Student
-    studentSwitch.addEventListener('click', function () {
+    studentSwitch.addEventListener('click', function() {
         studentForm.hidden = false;
         providerForm.hidden = true;
 
@@ -206,7 +213,7 @@
     });
 
     // Hiển thị form Provider
-    providerSwitch.addEventListener('click', function () {
+    providerSwitch.addEventListener('click', function() {
         studentForm.hidden = true;
         providerForm.hidden = false;
 
@@ -217,8 +224,8 @@
     // Bật / tắt hiển thị mật khẩu
     const passwordToggles = document.querySelectorAll('.password-toggle');
 
-    passwordToggles.forEach(function (button) {
-        button.addEventListener('click', function () {
+    passwordToggles.forEach(function(button) {
+        button.addEventListener('click', function() {
             const input = button.parentElement.querySelector('input');
             const icon = button.querySelector('i');
 
