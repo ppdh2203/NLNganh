@@ -1,24 +1,34 @@
 <section class="login-section">
     <div class="login-container">
-
+        <?php
+        $loginError = $_SESSION['login_error'] ?? null;
+        unset($_SESSION['login_error']);
+        ?>
         <!-- Tiêu đề -->
         <div class="login-header">
             <h1>Welcome back</h1>
             <p>Log in to continue your scholarship journey.</p>
         </div>
 
+        <?php if (is_array($loginError)): ?>
+            <div class="alert alert-<?= ($loginError['type'] ?? '') === 'warning' ? 'warning' : 'danger' ?> login-alert" role="alert">
+                <i class="bi bi-exclamation-circle"></i>
+                <span><?= htmlspecialchars((string)($loginError['message'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+        <?php endif; ?>
+        
         <form action="/login" method="POST" class="login-form">
-        <!-- Token bảo vệ form đăng nhập -->
+            <!-- Token bảo vệ form đăng nhập -->
             <input type="hidden"
                 name="csrf_token"
                 value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="form-group">
                 <label for="login-email">Email</label>
                 <input type="email"
-                       id="login-email"
-                       name="email"
-                       placeholder="Enter your email"
-                       required>
+                    id="login-email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required>
             </div>
 
             <div class="form-group">
@@ -29,14 +39,14 @@
 
                 <div class="password-field">
                     <input type="password"
-                           id="login-password"
-                           name="password"
-                           placeholder="Enter your password"
-                           required>
+                        id="login-password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required>
 
                     <button type="button"
-                            class="password-toggle"
-                            aria-label="Show password">
+                        class="password-toggle"
+                        aria-label="Show password">
                         <i class="bi bi-eye"></i>
                     </button>
                 </div>
@@ -58,7 +68,7 @@
     const passwordToggle = document.querySelector('.password-toggle');
     const passwordInput = document.getElementById('login-password');
 
-    passwordToggle.addEventListener('click', function () {
+    passwordToggle.addEventListener('click', function() {
         const icon = passwordToggle.querySelector('i');
 
         if (passwordInput.type === 'password') {

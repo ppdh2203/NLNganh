@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Controllers;
+
 use App\Core\Database;
 
 class LoginController extends Controller
@@ -12,7 +13,7 @@ class LoginController extends Controller
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-       $this->view('auth/login');
+        $this->view('auth/login');
     }
 
     public function login(): void
@@ -69,7 +70,7 @@ class LoginController extends Controller
 
         // Chỉ cho phép tài khoản Active đăng nhập
         if ($user['status'] !== 'Active') {
-            exit('Tài khoản chưa được kích hoạt hoặc đã bị khóa.');
+            $this->loginError('Tài khoản chưa được kích hoạt hoặc đã bị khóa.');
         }
 
         // Tạo phiên đăng nhập mới để tránh session fixation
@@ -81,6 +82,13 @@ class LoginController extends Controller
 
         // Thông báo đăng nhập thành công
         $_SESSION['login_success'] = true;
+
+        
+        // Điều hướng theo vai trò
+        if ($user['role'] === 'Admin') {
+            header('Location: /admin');
+            exit;
+        }
 
         // Chuyển về Trang chủ
         header('Location: /');
@@ -118,6 +126,18 @@ class LoginController extends Controller
 
         // Chuyển về Trang chủ
         header('Location: /');
+        exit;
+    }
+
+    private function loginError(string $message, string $type = 'danger'): void
+    {
+        // Lưu thông báo lỗi và chuyển về trang Login
+        $_SESSION['login_error'] = [
+            'message' => $message,
+            'type' => $type
+        ];
+
+        header('Location: /login');
         exit;
     }
 }

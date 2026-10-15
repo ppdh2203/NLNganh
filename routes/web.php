@@ -22,6 +22,10 @@ $router->get('/scholarships', '\App\Controllers\ScholarshipController@index');
 // Chi tiết học bổng
 $router->get('/scholarships/{id:\d+}', '\App\Controllers\ScholarshipController@show');
 
+
+$router->get('/admin', '\App\Controllers\AdminController@index');
+$router->post('/admin/accounts/toggle', '\App\Controllers\AdminController@toggleAccountStatus');
+
 // Xử lý khi người dùng truy cập đường dẫn không tồn tại
 $router->set404(function () {
     $controller = new \App\Controllers\Controller();

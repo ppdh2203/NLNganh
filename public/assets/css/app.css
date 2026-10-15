@@ -1486,3 +1486,45 @@ body {
     color: var(--white);
     background-color: var(--primary-dark);
 }
+
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+body.admin-body { margin: 0; background: var(--background); }
+.admin-layout { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; padding: 26px 16px; background: var(--primary-dark); color: white; }
+.admin-brand { display: flex; align-items: center; gap: 12px; padding: 8px 14px 30px; color: white; text-decoration: none; font-size: 23px; font-weight: 700; }
+.admin-brand i { font-size: 28px; }
+.admin-menu-label { padding: 0 14px 12px; font-size: 11px; letter-spacing: 1px; opacity: .65; }
+.admin-nav { display: flex; flex-direction: column; gap: 5px; }
+.admin-nav-item { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 0; border-radius: 9px; color: rgba(255,255,255,.8); background: transparent; text-align: left; text-decoration: none; font-size: 14px; cursor: pointer; }
+.admin-nav-item i { font-size: 18px; }
+.admin-nav-item:hover, .admin-nav-item.active { color: white; background: rgba(255,255,255,.16); }
+.admin-sidebar-bottom { margin-top: auto; padding-top: 25px; border-top: 1px solid rgba(255,255,255,.15); }
+.admin-sidebar-bottom form { margin: 0; }
+.admin-main { flex: 1; min-width: 0; }
+.admin-topbar { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px 30px; background: white; border-bottom: 1px solid var(--border); }
+.admin-profile { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.admin-profile i { color: var(--primary); font-size: 28px; }
+.admin-content { padding: 30px; }
+.admin-stat-card, .admin-section-card { padding: 24px; background: white; border: 1px solid var(--border); border-radius: 14px; }
+.admin-stat-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; border-radius: 11px; color: var(--primary); background: var(--light-blue); font-size: 21px; }
+.admin-section-card { min-height: 160px; }
+[data-admin-panel][hidden] { display: none !important; }
+@media (max-width: 768px) {
+    .admin-layout { flex-direction: column; }
+    .admin-sidebar { width: 100%; padding: 15px; }
+    .admin-brand { padding-bottom: 15px; }
+    .admin-nav { flex-direction: row; overflow-x: auto; }
+    .admin-nav-item { flex-shrink: 0; width: auto; white-space: nowrap; }
+    .admin-sidebar-bottom { display: flex; gap: 10px; margin-top: 12px; padding-top: 10px; }
+    .admin-topbar { padding: 15px 20px; }
+    .admin-content { padding: 20px; }
+}
+
+.admin-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
