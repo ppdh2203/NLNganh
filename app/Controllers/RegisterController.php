@@ -307,8 +307,73 @@ class RegisterController extends Controller
             exit('Nội dung giấy tờ xác minh không hợp lệ.');
         }
 
+
+        // Kiểm tra logo nhà cung cấp (không bắt buộc)
+        $logoFile = $_FILES['provider_logo'] ?? null;
+        $logoTmpPath = null;
+        $logoExtension = null;
+
+        if ($logoFile !== null) {
+            if (
+                !is_array($logoFile) ||
+                is_array($logoFile['error'] ?? null)
+            ) {
+                exit('Dữ liệu logo không hợp lệ.');
+            }
+
+            $logoError = $logoFile['error'] ?? UPLOAD_ERR_NO_FILE;
+
+            if ($logoError !== UPLOAD_ERR_NO_FILE) {
+                if ($logoError !== UPLOAD_ERR_OK) {
+                    exit('Không thể tải logo lên.');
+                }
+
+                $logoTmpPath = $logoFile['tmp_name'] ?? '';
+                $logoSize = $logoFile['size'] ?? 0;
+
+                if (
+                    !is_string($logoTmpPath) ||
+                    !is_uploaded_file($logoTmpPath) ||
+                    !is_int($logoSize) ||
+                    $logoSize <= 0 ||
+                    $logoSize > 2 * 1024 * 1024
+                ) {
+                    exit('Logo phải là ảnh hợp lệ và không quá 2MB.');
+                }
+
+                $logoMime = (new \finfo(FILEINFO_MIME_TYPE))
+                    ->file($logoTmpPath);
+
+                $logoTypes = [
+                    'image/jpeg' => 'jpg',
+                    'image/png' => 'png'
+                ];
+
+                if (!isset($logoTypes[$logoMime])) {
+                    exit('Logo chỉ chấp nhận JPG hoặc PNG.');
+                }
+
+                // Kiểm tra nội dung ảnh thực tế
+                $imageInfo = @getimagesize($logoTmpPath);
+
+                if (
+                    $imageInfo === false ||
+                    $imageInfo['mime'] !== $logoMime
+                ) {
+                    exit('Nội dung ảnh logo không hợp lệ.');
+                }
+
+                $logoExtension = $logoTypes[$logoMime];
+            }
+        }
+
         // Lưu giấy tờ bên ngoài thư mục public
         $uploadDir = dirname(__DIR__, 2) . '/storage/provider_verifications';
+
+        $logoUploadDir = dirname(__DIR__, 2) . '/public/assets/uploads/provider-logos';
+        $logoSavedPath = null;
+        $logoPublicPath = null;
+
         $filename = 'provider_' . bin2hex(random_bytes(16)) . '.' . $extensions[$mime];
         $relativePath = 'provider_verifications/' . $filename;
         $savedPath = null;
@@ -325,6 +390,15 @@ class RegisterController extends Controller
 
             if (!is_dir($uploadDir) && !mkdir($uploadDir, 0700, true) && !is_dir($uploadDir)) {
                 throw new \RuntimeException('Không thể tạo thư mục lưu giấy tờ.');
+            }
+
+            if (
+                $logoTmpPath !== null &&
+                !is_dir($logoUploadDir) &&
+                !mkdir($logoUploadDir, 0755, true) &&
+                !is_dir($logoUploadDir)
+            ) {
+                throw new \RuntimeException('Không thể tạo thư mục lưu logo.');
             }
 
             $db->beginTransaction();
@@ -347,24 +421,45 @@ class RegisterController extends Controller
             $savedPath = $uploadDir . '/' . $filename;
             chmod($savedPath, 0600);
 
+
+
+            // Lưu logo nếu nhà cung cấp có tải lên
+            if ($logoTmpPath !== null && $logoExtension !== null) {
+                $logoFilename = 'provider_logo_'
+                    . bin2hex(random_bytes(16))
+                    . '.' . $logoExtension;
+
+                $logoSavedPath = $logoUploadDir . '/' . $logoFilename;
+
+                if (!move_uploaded_file($logoTmpPath, $logoSavedPath)) {
+                    throw new \RuntimeException('Không thể lưu logo nhà cung cấp.');
+                }
+
+                $logoPublicPath = '/assets/uploads/provider-logos/' . $logoFilename;
+            }
+
+
             // Lưu hồ sơ nhà cung cấp
+
             $stmt = $db->prepare("
-            INSERT INTO providers (
-                user_id, provider_name, provider_address,
-                verification_document, organization,
-                contact_email, provider_phone
-            )
-            VALUES (
-                :user_id, :provider_name, :provider_address,
-                :verification_document, :organization,
-                :contact_email, :provider_phone
-            )
-        ");
+                INSERT INTO providers (
+                    user_id, provider_name, provider_logo,
+                    provider_address, verification_document,
+                    organization, contact_email, provider_phone
+                )
+                VALUES (
+                    :user_id, :provider_name, :provider_logo,
+                    :provider_address, :verification_document,
+                    :organization, :contact_email, :provider_phone
+                )
+            ");
+
 
             $stmt->execute([
                 'user_id' => $userId,
                 'provider_name' => $name,
                 'provider_address' => $address,
+                'provider_logo' => $logoPublicPath,
                 'verification_document' => $relativePath,
                 'organization' => $organization !== '' ? $organization : null,
                 'contact_email' => $contactEmail !== '' ? $contactEmail : null,
@@ -386,6 +481,10 @@ class RegisterController extends Controller
                 unlink($savedPath);
             }
 
+            if ($logoSavedPath !== null && is_file($logoSavedPath)) {
+                unlink($logoSavedPath);
+            }
+            
             error_log('[PROVIDER REGISTER ERROR] ' . $e->getMessage());
 
             if ($e instanceof \PDOException && $e->getCode() === '23000') {

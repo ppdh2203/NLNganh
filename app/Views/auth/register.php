@@ -111,6 +111,18 @@
                     </div>
                 </div>
 
+
+                <!-- Logo nhà cung cấp (không bắt buộc) -->
+                <div class="form-group">
+                    <label for="provider-logo">Organization logo (optional)</label>
+                    <input
+                        type="file"
+                        id="provider-logo"
+                        name="provider_logo"
+                        accept=".jpg,.jpeg,.png">
+                    <small>JPG, JPEG or PNG. Maximum 2MB.</small>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="provider-email">Login email</label>

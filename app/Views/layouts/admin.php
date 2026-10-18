@@ -49,15 +49,52 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelectorAll('[data-admin-tab]').forEach(button => {
+        const tabButtons = document.querySelectorAll('[data-admin-tab]');
+        const tabPanels = document.querySelectorAll('[data-admin-panel]');
+
+        // Hàm hiển thị tab được chọn
+        function openAdminTab(tabName) {
+            const selectedPanel = document.querySelector(
+                `[data-admin-panel="${tabName}"]`
+            );
+
+            // Nếu tab không tồn tại thì không thực hiện
+            if (!selectedPanel) return;
+
+            // Cập nhật trạng thái các nút Sidebar
+            tabButtons.forEach(button => {
+                button.classList.toggle(
+                    'active',
+                    button.dataset.adminTab === tabName
+                );
+            });
+
+            // Chỉ hiển thị nội dung của tab được chọn
+            tabPanels.forEach(panel => {
+                panel.hidden = panel.dataset.adminPanel !== tabName;
+            });
+        }
+
+        // Khi bấm vào một mục trên Sidebar
+        tabButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const tab = button.dataset.adminTab;
-                document.querySelectorAll('[data-admin-tab]').forEach(item => item.classList.toggle('active', item === button));
-                document.querySelectorAll('[data-admin-panel]').forEach(panel => {
-                    panel.hidden = panel.dataset.adminPanel !== tab;
-                });
+                const tabName = button.dataset.adminTab;
+
+                openAdminTab(tabName);
+
+                // Cập nhật URL nhưng không tải lại trang
+                const url = new URL(window.location.href);
+                url.searchParams.set('tab', tabName);
+                window.history.replaceState({}, '', url);
             });
         });
+
+        // Khi tải trang, đọc tab từ URL
+        const params = new URLSearchParams(window.location.search);
+        const currentTab = params.get('tab') || 'overview';
+
+        // Mở đúng tab đang được lưu trên URL
+        openAdminTab(currentTab);
     </script>
 </body>
 

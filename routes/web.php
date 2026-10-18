@@ -25,6 +25,17 @@ $router->get('/scholarships/{id:\d+}', '\App\Controllers\ScholarshipController@s
 
 $router->get('/admin', '\App\Controllers\AdminController@index');
 $router->post('/admin/accounts/toggle', '\App\Controllers\AdminController@toggleAccountStatus');
+$router->get(
+    '/admin/providers/{id:\d+}/document',
+    '\App\Controllers\AdminController@viewProviderDocument'
+);
+$router->post(
+    '/admin/providers/review',
+    '\App\Controllers\AdminController@reviewProvider'
+);
+
+
+
 
 // Xử lý khi người dùng truy cập đường dẫn không tồn tại
 $router->set404(function () {

@@ -58,10 +58,33 @@ class AdminController extends Controller
         ");
         $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // Danh sách nhà cung cấp đang chờ duyệt
+        $stmt = $db->query("
+            SELECT
+                u.user_id,
+                u.email,
+                u.status,
+                u.created_at,
+                p.provider_name,
+                p.organization,
+                p.provider_logo,
+                p.contact_email,
+                p.provider_phone,
+                p.provider_address,
+                p.verification_document
+            FROM users u
+            INNER JOIN providers p ON p.user_id = u.user_id
+            WHERE u.role = 'Provider'
+            AND u.status = 'Pending'
+            ORDER BY u.created_at ASC, u.user_id ASC
+        ");
+
+        $pendingProviders = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Hiển thị Dashboard Admin
         $this->adminView('admin/dashboard', [
             'stats' => $stats,
-            'accounts' => $accounts
+            'accounts' => $accounts,
+            'pendingProviders' => $pendingProviders
         ]);
     }
 
@@ -132,6 +155,157 @@ class AdminController extends Controller
 
         // Quay lại tab Quản lý tài khoản
         header('Location: /admin?tab=users');
+        exit;
+    }
+
+
+    public function viewProviderDocument(int $id): void
+    {
+        // Chỉ Admin đang hoạt động mới được xem
+        $this->requireActiveUser('Admin');
+
+        $db = Database::connect();
+
+        // Lấy đường dẫn tài liệu từ database
+        $stmt = $db->prepare("
+        SELECT p.verification_document
+        FROM providers p
+        INNER JOIN users u ON u.user_id = p.user_id
+        WHERE p.user_id = :id
+          AND u.role = 'Provider'
+        LIMIT 1
+    ");
+        $stmt->execute(['id' => $id]);
+        $document = $stmt->fetchColumn();
+
+        if (!is_string($document) || $document === '') {
+            http_response_code(404);
+            exit('Không tìm thấy tài liệu xác minh.');
+        }
+
+        // Thư mục riêng tư chứa giấy tờ xác minh
+        $storageDir = realpath(
+            dirname(__DIR__, 2) . '/storage/provider_verifications'
+        );
+
+        if ($storageDir === false) {
+            http_response_code(404);
+            exit('Không tìm thấy thư mục tài liệu.');
+        }
+
+        // Chỉ chấp nhận tên file, không cho truy cập đường dẫn tùy ý
+        $fileName = basename(str_replace('\\', '/', $document));
+        $filePath = realpath($storageDir . DIRECTORY_SEPARATOR . $fileName);
+
+        if (
+            $filePath === false ||
+            dirname($filePath) !== $storageDir ||
+            !is_file($filePath) ||
+            !is_readable($filePath)
+        ) {
+            http_response_code(404);
+            exit('Tài liệu không tồn tại.');
+        }
+
+        // Kiểm tra định dạng thực tế của file
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filePath);
+
+        $allowedTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/png'
+        ];
+
+        if (!in_array($mime, $allowedTypes, true)) {
+            http_response_code(415);
+            exit('Định dạng tài liệu không được hỗ trợ.');
+        }
+
+        // Hiển thị file trực tiếp trong trình duyệt
+        header('Content-Type: ' . $mime);
+        header('Content-Disposition: inline; filename="verification.' .
+            match ($mime) {
+                'application/pdf' => 'pdf',
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png'
+            } . '"');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: private, no-store');
+        header('Content-Length: ' . filesize($filePath));
+
+        readfile($filePath);
+        exit;
+    }
+
+
+    public function reviewProvider(): void
+    {
+        // Chỉ Admin đang hoạt động mới được xử lý
+        $this->requireActiveUser('Admin');
+
+        // Kiểm tra CSRF
+        $token = $_POST['csrf_token'] ?? '';
+
+        if (
+            !is_string($token) ||
+            !isset($_SESSION['csrf_token']) ||
+            !is_string($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $token)
+        ) {
+            http_response_code(403);
+            exit('Phiên làm việc không hợp lệ.');
+        }
+
+        // Lấy ID nhà cung cấp và quyết định duyệt
+        $providerId = filter_var(
+            $_POST['provider_id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+
+        $action = $_POST['action'] ?? '';
+
+        if (
+            !$providerId ||
+            !is_string($action) ||
+            !in_array($action, ['approve', 'reject'], true)
+        ) {
+            http_response_code(400);
+            exit('Yêu cầu không hợp lệ.');
+        }
+
+        // Xác định trạng thái mới
+        $newStatus = $action === 'approve'
+            ? 'Active'
+            : 'Rejected';
+
+        $db = Database::connect();
+
+        // Chỉ cập nhật Provider đang Pending
+        $stmt = $db->prepare("
+        UPDATE users
+        SET status = :new_status
+        WHERE user_id = :provider_id
+          AND role = 'Provider'
+          AND status = 'Pending'
+          AND EXISTS (
+              SELECT 1
+              FROM providers p
+              WHERE p.user_id = users.user_id
+          )
+    ");
+
+        $stmt->execute([
+            'new_status' => $newStatus,
+            'provider_id' => $providerId
+        ]);
+
+        if ($stmt->rowCount() === 0) {
+            http_response_code(409);
+            exit('Hồ sơ không tồn tại hoặc đã được xử lý.');
+        }
+
+        // Quay lại đúng tab Duyệt nhà cung cấp
+        header('Location: /admin?tab=providers');
         exit;
     }
 }
