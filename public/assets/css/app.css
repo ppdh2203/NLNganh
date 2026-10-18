@@ -1614,3 +1614,53 @@ body.admin-body { margin: 0; background: var(--background); }
     top: 50%;
     transform: translateY(-50%);
 }
+
+/* ADMIN - Tab duyệt nhà cung cấp */
+[data-admin-panel="providers"] .nav-pills .nav-link {
+    color: #6052db;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 10px 16px;
+}
+
+[data-admin-panel="providers"] .nav-pills .nav-link:hover {
+    background: #eeeaff;
+    color: #5142c7;
+}
+
+[data-admin-panel="providers"] .nav-pills .nav-link.active {
+    background: #6052db;
+    color: #fff;
+}
+
+[data-admin-panel="providers"] .nav-pills .nav-link.active .badge {
+    background: #fff !important;
+    color: #6052db !important;
+}
+
+/* ADMIN - Nút xem hồ sơ và mở tài liệu */
+[data-admin-panel="providers"] .btn-outline-primary,
+.admin-provider-header ~ .modal-body .btn-outline-primary {
+    color: #6052db;
+    border-color: #6052db;
+}
+
+[data-admin-panel="providers"] .btn-outline-primary:hover,
+.admin-provider-header ~ .modal-body .btn-outline-primary:hover {
+    background: #6052db;
+    border-color: #6052db;
+    color: #fff;
+}
+
+/* ADMIN - Nút màu chủ đề Scholarship */
+.admin-provider-btn {
+    color: #6052db;
+    border-color: #6052db;
+}
+
+.admin-provider-btn:hover,
+.admin-provider-btn:focus-visible {
+    background-color: #6052db;
+    border-color: #6052db;
+    color: #fff;
+}

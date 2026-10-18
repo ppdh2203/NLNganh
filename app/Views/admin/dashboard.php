@@ -3,6 +3,9 @@
 /** @var array $stats */
 /** @var array $accounts */
 /** @var array $pendingProviders */
+/** @var array $approvedProviders */
+/** @var array $rejectedProviders */
+
 ?>
 <section data-admin-panel="overview">
     <div class="mb-4">
@@ -108,86 +111,155 @@
 
 
 <!-- DUYỆT NHÀ CUNG CẤP -->
+
+<!-- DUYỆT NHÀ CUNG CẤP -->
 <section data-admin-panel="providers" hidden>
     <div class="mb-4">
         <h2 class="h4 fw-bold">Duyệt nhà cung cấp</h2>
         <p class="text-muted">
-            Kiểm tra thông tin và hồ sơ xác minh của nhà cung cấp trước khi kích hoạt tài khoản.
+            Theo dõi hồ sơ đăng ký và kết quả xét duyệt nhà cung cấp.
         </p>
     </div>
 
-    <div class="admin-section-card">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="h6 fw-bold mb-0">Danh sách chờ duyệt</h3>
-            <span class="text-muted small">
-                Tổng: <?= count($pendingProviders) ?> hồ sơ
-            </span>
-        </div>
+    <?php
+    $providerGroups = [
+        'pending' => [
+            'title' => 'Chờ duyệt',
+            'status' => 'Pending',
+            'badge' => 'warning',
+            'data' => $pendingProviders
+        ],
+        'approved' => [
+            'title' => 'Đã phê duyệt',
+            'status' => 'Active',
+            'badge' => 'success',
+            'data' => $approvedProviders
+        ],
+        'rejected' => [
+            'title' => 'Đã từ chối',
+            'status' => 'Rejected',
+            'badge' => 'danger',
+            'data' => $rejectedProviders
+        ]
+    ];
+    ?>
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Nhà cung cấp</th>
-                        <th>Email đăng nhập</th>
-                        <th>Tổ chức</th>
-                        <th>Ngày đăng ký</th>
-                        <th>Trạng thái</th>
-                        <th class="text-center">Thao tác</th>
-                    </tr>
-                </thead>
+    <!-- Các tab phân loại -->
+    <ul class="nav nav-pills gap-2 mb-3" role="tablist">
+        <?php foreach ($providerGroups as $key => $group): ?>
+            <li class="nav-item" role="presentation">
+                <button
+                    type="button"
+                    class="nav-link <?= $key === 'pending' ? 'active' : '' ?>"
+                    data-bs-toggle="pill"
+                    data-bs-target="#provider-group-<?= $key ?>"
+                    role="tab"
+                    aria-controls="provider-group-<?= $key ?>"
+                    aria-selected="<?= $key === 'pending' ? 'true' : 'false' ?>">
+                    <?= $group['title'] ?>
+                    <span class="badge rounded-pill text-bg-light ms-1">
+                        <?= count($group['data']) ?>
+                    </span>
+                </button>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 
-                <tbody>
-                    <?php foreach ($pendingProviders as $provider): ?>
-                        <tr>
-                            <td class="fw-semibold">
-                                <?= htmlspecialchars($provider['provider_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                            </td>
+    <!-- Nội dung từng tab -->
+    <div class="tab-content">
+        <?php foreach ($providerGroups as $key => $group): ?>
+            <div
+                class="tab-pane fade <?= $key === 'pending' ? 'show active' : '' ?>"
+                id="provider-group-<?= $key ?>"
+                role="tabpanel">
 
-                            <td>
-                                <?= htmlspecialchars($provider['email'], ENT_QUOTES, 'UTF-8') ?>
-                            </td>
+                <div class="admin-section-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 fw-bold mb-0">
+                            Danh sách <?= mb_strtolower($group['title'], 'UTF-8') ?>
+                        </h3>
+                        <span class="text-muted small">
+                            Tổng: <?= count($group['data']) ?> hồ sơ
+                        </span>
+                    </div>
 
-                            <td>
-                                <?= htmlspecialchars($provider['organization'] ?: 'Chưa cập nhật', ENT_QUOTES, 'UTF-8') ?>
-                            </td>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Email đăng nhập</th>
+                                    <th>Tổ chức</th>
+                                    <th>Ngày đăng ký</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($group['data'] as $provider): ?>
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            <?= htmlspecialchars($provider['provider_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                        </td>
 
-                            <td>
-                                <?= date('d/m/Y', strtotime($provider['created_at'])) ?>
-                            </td>
+                                        <td>
+                                            <?= htmlspecialchars($provider['email'], ENT_QUOTES, 'UTF-8') ?>
+                                        </td>
 
-                            <td>
-                                <span class="badge text-bg-warning">Pending</span>
-                            </td>
+                                        <td>
+                                            <?= htmlspecialchars($provider['organization'] ?: 'Chưa cập nhật', ENT_QUOTES, 'UTF-8') ?>
+                                        </td>
 
-                            <td class="text-center">
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#providerModal<?= (int) $provider['user_id'] ?>">
-                                    <i class="bi bi-eye me-1"></i>
-                                    Xem hồ sơ
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                                        <td>
+                                            <?= date('d/m/Y', strtotime($provider['created_at'])) ?>
+                                        </td>
 
-                    <?php if (empty($pendingProviders)): ?>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                Hiện không có nhà cung cấp nào đang chờ duyệt.
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                                        <td>
+                                            <span class="badge text-bg-<?= $group['badge'] ?>">
+                                                <?= $group['title'] ?>
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-outline-primary admin-provider-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#providerModal<?= (int) $provider['user_id'] ?>">
+                                                <i class="bi bi-eye me-1"></i>
+                                                Xem hồ sơ
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                                <?php if (empty($group['data'])): ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            Không có hồ sơ trong nhóm này.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </section>
 
+
 <!-- MODAL CHI TIẾT HỒ SƠ -->
-<?php foreach ($pendingProviders as $provider): ?>
+<?php
+$modalProviders = array_merge(
+    $pendingProviders,
+    $approvedProviders,
+    $rejectedProviders
+);
+?>
+
+<?php foreach ($modalProviders as $provider): ?>
     <?php $modalId = 'providerModal' . (int) $provider['user_id']; ?>
 
     <div class="modal fade" id="<?= $modalId ?>" tabindex="-1"
@@ -270,7 +342,7 @@
                                 <a href="<?= htmlspecialchars($documentUrl, ENT_QUOTES, 'UTF-8') ?>"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="btn btn-sm btn-outline-primary">
+                                    class="btn btn-sm btn-outline-primary admin-provider-btn">
                                     <i class="bi bi-box-arrow-up-right me-1"></i>
                                     Mở trong tab mới
                                 </a>
@@ -310,55 +382,75 @@
 
                 <div class="modal-footer d-flex justify-content-between align-items-center">
 
+                    <?php
+                    $statusLabel = match ($provider['status']) {
+                        'Pending' => 'Chờ duyệt',
+                        'Active' => 'Đã phê duyệt',
+                        'Rejected' => 'Đã từ chối',
+                        default => $provider['status']
+                    };
+                    ?>
+
                     <span class="text-muted small">
-                        Trạng thái: Chờ duyệt
+                        Trạng thái: <?= htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8') ?>
                     </span>
+                    <?php if ($provider['status'] === 'Pending'): ?>
 
-                    <div class="d-flex gap-2">
-                        <form method="POST"
-                            action="/admin/providers/review"
-                            onsubmit="return confirm('Bạn có chắc muốn từ chối nhà cung cấp này?')">
+                        <div class="d-flex gap-2">
+                            <form method="POST"
+                                action="/admin/providers/review"
+                                onsubmit="return confirm('Bạn có chắc muốn từ chối nhà cung cấp này?')">
 
-                            <input type="hidden"
-                                name="csrf_token"
-                                value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
-                            <input type="hidden"
-                                name="provider_id"
-                                value="<?= (int) $provider['user_id'] ?>">
+                                <input type="hidden"
+                                    name="provider_id"
+                                    value="<?= (int) $provider['user_id'] ?>">
 
-                            <input type="hidden"
-                                name="action"
-                                value="reject">
+                                <input type="hidden"
+                                    name="action"
+                                    value="reject">
 
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="bi bi-x-circle me-1"></i>
-                                Từ chối
-                            </button>
-                        </form>
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Từ chối
+                                </button>
+                            </form>
 
-                        <form method="POST"
-                            action="/admin/providers/review"
-                            onsubmit="return confirm('Bạn có chắc muốn phê duyệt nhà cung cấp này?')">
+                            <form method="POST"
+                                action="/admin/providers/review"
+                                onsubmit="return confirm('Bạn có chắc muốn phê duyệt nhà cung cấp này?')">
 
-                            <input type="hidden"
-                                name="csrf_token"
-                                value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
-                            <input type="hidden"
-                                name="provider_id"
-                                value="<?= (int) $provider['user_id'] ?>">
+                                <input type="hidden"
+                                    name="provider_id"
+                                    value="<?= (int) $provider['user_id'] ?>">
 
-                            <input type="hidden"
-                                name="action"
-                                value="approve">
+                                <input type="hidden"
+                                    name="action"
+                                    value="approve">
 
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-check-circle me-1"></i>
-                                Phê duyệt
-                            </button>
-                        </form>
-                    </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Phê duyệt
+                                </button>
+                            </form>
+                        </div>
+                    <?php else: ?>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+
+                    <?php endif; ?>
                 </div>
 
 

@@ -54,11 +54,14 @@ class AdminController extends Controller
             LEFT JOIN students s ON s.user_id = u.user_id
             LEFT JOIN providers p ON p.user_id = u.user_id
             WHERE u.role IN ('Student', 'Provider')
+            AND u.status IN ('Active', 'Locked')
             ORDER BY u.created_at DESC, u.user_id DESC
         ");
         $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Danh sách nhà cung cấp đang chờ duyệt
+
+        // Lấy hồ sơ nhà cung cấp theo trạng thái xét duyệt
         $stmt = $db->query("
             SELECT
                 u.user_id,
@@ -66,8 +69,8 @@ class AdminController extends Controller
                 u.status,
                 u.created_at,
                 p.provider_name,
-                p.organization,
                 p.provider_logo,
+                p.organization,
                 p.contact_email,
                 p.provider_phone,
                 p.provider_address,
@@ -75,16 +78,37 @@ class AdminController extends Controller
             FROM users u
             INNER JOIN providers p ON p.user_id = u.user_id
             WHERE u.role = 'Provider'
-            AND u.status = 'Pending'
-            ORDER BY u.created_at ASC, u.user_id ASC
+              AND u.status IN ('Pending', 'Active', 'Rejected')
+            ORDER BY u.created_at DESC, u.user_id DESC
         ");
 
-        $pendingProviders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $allProviders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pendingProviders = [];
+        $approvedProviders = [];
+        $rejectedProviders = [];
+
+        foreach ($allProviders as $provider) {
+            switch ($provider['status']) {
+                case 'Pending':
+                    $pendingProviders[] = $provider;
+                    break;
+                case 'Active':
+                    $approvedProviders[] = $provider;
+                    break;
+                case 'Rejected':
+                    $rejectedProviders[] = $provider;
+                    break;
+            }
+        }
+
         // Hiển thị Dashboard Admin
         $this->adminView('admin/dashboard', [
             'stats' => $stats,
             'accounts' => $accounts,
-            'pendingProviders' => $pendingProviders
+            'pendingProviders' => $pendingProviders,
+            'approvedProviders' => $approvedProviders,
+            'rejectedProviders' => $rejectedProviders
         ]);
     }
 
