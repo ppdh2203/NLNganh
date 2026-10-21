@@ -459,18 +459,432 @@ $modalProviders = array_merge(
     </div>
 <?php endforeach; ?>
 
-
 <?php
-$panels = [
-    'reviews' => ['Duyệt học bổng', 'Kiểm tra học bổng được nhà cung cấp gửi lên.'],
-    'scholarships' => ['Quản lý học bổng', 'Theo dõi và quản lý trạng thái các học bổng.']
+// Các nhóm học bổng trong trang xét duyệt
+$scholarshipGroups = [
+    'pending' => [
+        'title' => 'Chờ duyệt',
+        'badge' => 'warning',
+        'data' => $pendingScholarships ?? []
+    ],
+    'published' => [
+        'title' => 'Đã phê duyệt',
+        'badge' => 'success',
+        'data' => $publishedScholarships ?? []
+    ],
+    'rejected' => [
+        'title' => 'Đã từ chối',
+        'badge' => 'danger',
+        'data' => $rejectedScholarships ?? []
+    ]
 ];
+
+$modalScholarships = array_merge(
+    $pendingScholarships ?? [],
+    $publishedScholarships ?? [],
+    $rejectedScholarships ?? []
+);
 ?>
-<?php foreach ($panels as $key => $panel): ?>
-    <section data-admin-panel="<?= $key ?>" hidden>
-        <h2 class="h4 fw-bold mb-3"><?= $panel[0] ?></h2>
-        <div class="admin-section-card">
-            <p class="text-muted mb-0"><?= $panel[1] ?></p>
+
+<!-- DUYỆT HỌC BỔNG -->
+<section data-admin-panel="reviews" hidden>
+    <div class="mb-4">
+        <h2 class="h4 fw-bold">Duyệt học bổng</h2>
+        <p class="text-muted">
+            Kiểm tra thông tin và kết quả xét duyệt học bổng.
+        </p>
+    </div>
+
+    <!-- Tab trạng thái -->
+    <ul class="nav nav-pills gap-2 mb-3 admin-scholarship-tabs"
+        role="tablist">
+
+        <?php foreach ($scholarshipGroups as $key => $group): ?>
+            <li class="nav-item" role="presentation">
+                <button
+                    type="button"
+                    class="nav-link <?= $key === 'pending' ? 'active' : '' ?>"
+                    data-bs-toggle="pill"
+                    data-bs-target="#scholarship-group-<?= $key ?>"
+                    role="tab"
+                    aria-controls="scholarship-group-<?= $key ?>"
+                    aria-selected="<?= $key === 'pending' ? 'true' : 'false' ?>">
+
+                    <?= $group['title'] ?>
+
+                    <span class="badge rounded-pill text-bg-light ms-1">
+                        <?= count($group['data']) ?>
+                    </span>
+                </button>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <!-- Danh sách học bổng -->
+    <div class="tab-content">
+        <?php foreach ($scholarshipGroups as $key => $group): ?>
+            <div
+                class="tab-pane fade <?= $key === 'pending' ? 'show active' : '' ?>"
+                id="scholarship-group-<?= $key ?>"
+                role="tabpanel">
+
+                <div class="admin-section-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 fw-bold mb-0">
+                            Danh sách <?= htmlspecialchars(
+                                            mb_strtolower($group['title'], 'UTF-8'),
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                        </h3>
+
+                        <span class="text-muted small">
+                            Tổng: <?= count($group['data']) ?> học bổng
+                        </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tên học bổng</th>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Số tiền</th>
+                                    <th>Hạn nộp</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($group['data'] as $scholarship): ?>
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            <?= htmlspecialchars(
+                                                $scholarship['scholarship_name'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+                                        </td>
+
+                                        <td>
+                                            <?= htmlspecialchars(
+                                                $scholarship['organization']
+                                                    ?: $scholarship['provider_name'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+                                        </td>
+
+                                        <td>
+                                            <?= number_format(
+                                                (float) $scholarship['amount'],
+                                                0,
+                                                ',',
+                                                '.'
+                                            ) ?> VNĐ
+                                        </td>
+
+                                        <td>
+                                            <?= date(
+                                                'd/m/Y',
+                                                strtotime($scholarship['end_date'])
+                                            ) ?>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge text-bg-<?= $group['badge'] ?>">
+                                                <?= $group['title'] ?>
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-outline-primary admin-provider-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#scholarshipModal<?= (int) $scholarship['scholarship_id'] ?>">
+
+                                                <i class="bi bi-eye me-1"></i>
+                                                Xem chi tiết
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                                <?php if (empty($group['data'])): ?>
+                                    <tr>
+                                        <td colspan="6"
+                                            class="text-center text-muted py-4">
+                                            Không có học bổng trong nhóm này.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<!-- MODAL CHI TIẾT HỌC BỔNG -->
+<?php foreach ($modalScholarships as $scholarship): ?>
+    <?php
+    $scholarshipId = (int) $scholarship['scholarship_id'];
+    $modalId = 'scholarshipModal' . $scholarshipId;
+
+    $scholarshipStatus = match ($scholarship['status']) {
+        'Pending' => 'Chờ duyệt',
+        'Published' => 'Đã phê duyệt',
+        'Rejected' => 'Đã từ chối',
+        default => $scholarship['status']
+    };
+
+    $requirements = \App\Models\Scholarship::getRequirements($scholarshipId);
+    $documents = \App\Models\Scholarship::getRequiredDocuments($scholarshipId);
+    ?>
+
+    <div class="modal fade"
+        id="<?= $modalId ?>"
+        tabindex="-1"
+        aria-labelledby="<?= $modalId ?>Label"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header admin-provider-header">
+                    <div class="admin-provider-heading">
+                        <div class="admin-provider-logo-placeholder">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+
+                        <h5 class="modal-title admin-provider-title"
+                            id="<?= $modalId ?>Label">
+                            <?= htmlspecialchars(
+                                $scholarship['scholarship_name'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </h5>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close admin-provider-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Đóng">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <?php
+                        $fields = [
+                            'Nhà cung cấp' =>
+                            $scholarship['provider_name'],
+                            'Tổ chức' =>
+                            $scholarship['organization'],
+                            'Số tiền học bổng' =>
+                            number_format(
+                                (float) $scholarship['amount'],
+                                0,
+                                ',',
+                                '.'
+                            ) . ' VNĐ',
+                            'Ngày bắt đầu' =>
+                            date('d/m/Y', strtotime($scholarship['start_date'])),
+                            'Hạn nộp' =>
+                            date('d/m/Y', strtotime($scholarship['end_date'])),
+                            'Ngày tạo' =>
+                            date('d/m/Y', strtotime($scholarship['created_at']))
+                        ];
+                        ?>
+
+                        <?php foreach ($fields as $label => $value): ?>
+                            <div class="col-md-6">
+                                <div class="text-muted small mb-1">
+                                    <?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?>
+                                </div>
+                                <div class="fw-semibold">
+                                    <?= htmlspecialchars(
+                                        (string) ($value ?: 'Chưa cập nhật'),
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <hr>
+
+                    <h6 class="fw-bold">Mô tả học bổng</h6>
+                    <p class="lh-lg" style="white-space: pre-line;"><?= htmlspecialchars(
+                                                                        $scholarship['description'] ?? '',
+                                                                        ENT_QUOTES,
+                                                                        'UTF-8'
+                                                                    ) ?></p>
+
+                    <hr>
+
+                    <h6 class="fw-bold mb-3">Điều kiện ứng tuyển</h6>
+
+                    <?php if ($requirements !== false): ?>
+                        <div class="row g-3">
+                            <?php
+                            $requirementFields = [
+                                'GPA tối thiểu' => $requirements['required_gpa'],
+                                'Năm học yêu cầu' => $requirements['required_year'],
+                                'Ngành học' => $requirements['required_major']
+                            ];
+                            ?>
+
+                            <?php foreach ($requirementFields as $label => $value): ?>
+                                <div class="col-md-6">
+                                    <div class="text-muted small mb-1">
+                                        <?= $label ?>
+                                    </div>
+                                    <div class="fw-semibold">
+                                        <?= htmlspecialchars(
+                                            (string) ($value !== null && $value !== ''
+                                                ? $value
+                                                : 'Không yêu cầu'),
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted">
+                            Chưa có thông tin điều kiện ứng tuyển.
+                        </p>
+                    <?php endif; ?>
+
+                    <hr>
+
+                    <h6 class="fw-bold mb-3">Giấy tờ cần nộp</h6>
+
+                    <?php if (!empty($documents)): ?>
+                        <div class="d-flex flex-column gap-2">
+                            <?php foreach ($documents as $document): ?>
+                                <div class="border rounded-3 p-3">
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <span class="fw-semibold">
+                                            <?= htmlspecialchars(
+                                                $document['document_name'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+                                        </span>
+
+                                        <span class="badge <?= (int) $document['is_required'] === 1
+                                                                ? 'text-bg-danger'
+                                                                : 'text-bg-secondary' ?>">
+                                            <?= (int) $document['is_required'] === 1
+                                                ? 'Bắt buộc'
+                                                : 'Không bắt buộc' ?>
+                                        </span>
+                                    </div>
+
+                                    <?php if (!empty($document['description'])): ?>
+                                        <p class="text-muted small mt-2 mb-0">
+                                            <?= htmlspecialchars(
+                                                $document['description'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted">
+                            Chưa có danh sách giấy tờ yêu cầu.
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-between align-items-center">
+
+                    <span class="text-muted small">
+                        Trạng thái:
+                        <?= htmlspecialchars($scholarshipStatus, ENT_QUOTES, 'UTF-8') ?>
+                    </span>
+
+                    <?php if ($scholarship['status'] === 'Pending'): ?>
+
+                        <div class="d-flex gap-2">
+
+                            <form method="POST"
+                                action="/admin/scholarships/review"
+                                onsubmit="return confirm('Bạn có chắc muốn từ chối học bổng này?')">
+
+                                <input type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+                                <input type="hidden"
+                                    name="scholarship_id"
+                                    value="<?= (int) $scholarship['scholarship_id'] ?>">
+
+                                <input type="hidden" name="action" value="reject">
+
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Từ chối
+                                </button>
+                            </form>
+
+                            <form method="POST"
+                                action="/admin/scholarships/review"
+                                onsubmit="return confirm('Bạn có chắc muốn phê duyệt học bổng này?')">
+
+                                <input type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+                                <input type="hidden"
+                                    name="scholarship_id"
+                                    value="<?= (int) $scholarship['scholarship_id'] ?>">
+
+                                <input type="hidden" name="action" value="approve">
+
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Phê duyệt
+                                </button>
+                            </form>
+
+                        </div>
+
+                    <?php else: ?>
+
+                        <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </div>
         </div>
-    </section>
+    </div>
 <?php endforeach; ?>
+
+<!-- QUẢN LÝ HỌC BỔNG -->
+<section data-admin-panel="scholarships" hidden>
+    <h2 class="h4 fw-bold mb-3">Quản lý học bổng</h2>
+    <div class="admin-section-card">
+        <p class="text-muted mb-0">
+            Theo dõi và quản lý trạng thái các học bổng.
+        </p>
+    </div>
+</section>

@@ -33,6 +33,10 @@ $router->post(
     '/admin/providers/review',
     '\App\Controllers\AdminController@reviewProvider'
 );
+$router->post(
+    '/admin/scholarships/review',
+    '\App\Controllers\AdminController@reviewScholarship'
+);
 
 
 

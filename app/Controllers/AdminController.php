@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Core\Database;
 use PDO;
+use App\Models\Scholarship;
 
 class AdminController extends Controller
 {
@@ -102,13 +103,21 @@ class AdminController extends Controller
             }
         }
 
+        // Danh sách học bổng theo trạng thái xét duyệt
+        $pendingScholarships = Scholarship::getByStatus('Pending');
+        $publishedScholarships = Scholarship::getByStatus('Published');
+        $rejectedScholarships = Scholarship::getByStatus('Rejected');
+
         // Hiển thị Dashboard Admin
         $this->adminView('admin/dashboard', [
             'stats' => $stats,
             'accounts' => $accounts,
             'pendingProviders' => $pendingProviders,
             'approvedProviders' => $approvedProviders,
-            'rejectedProviders' => $rejectedProviders
+            'rejectedProviders' => $rejectedProviders,
+            'pendingScholarships' => $pendingScholarships,
+            'publishedScholarships' => $publishedScholarships,
+            'rejectedScholarships' => $rejectedScholarships
         ]);
     }
 
@@ -330,6 +339,55 @@ class AdminController extends Controller
 
         // Quay lại đúng tab Duyệt nhà cung cấp
         header('Location: /admin?tab=providers');
+        exit;
+    }
+
+    public function reviewScholarship(): void
+    {
+        // 1. Chỉ Admin đang hoạt động mới được xét duyệt
+        $this->requireActiveUser('Admin');
+
+        // 2. Kiểm tra CSRF
+        $token = $_POST['csrf_token'] ?? '';
+
+        if (
+            !is_string($token) ||
+            !isset($_SESSION['csrf_token']) ||
+            !is_string($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $token)
+        ) {
+            http_response_code(403);
+            exit('Phiên làm việc không hợp lệ.');
+        }
+
+        // 3. Kiểm tra ID học bổng và hành động
+        $scholarshipId = filter_var(
+            $_POST['scholarship_id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+
+        $action = $_POST['action'] ?? '';
+
+        if (
+            !$scholarshipId ||
+            $scholarshipId <= 0 ||
+            !is_string($action) ||
+            !in_array($action, ['approve', 'reject'], true)
+        ) {
+            http_response_code(400);
+            exit('Yêu cầu xét duyệt không hợp lệ.');
+        }
+
+        // 4. Cập nhật trạng thái thông qua Model
+        $updated = Scholarship::review($scholarshipId, $action);
+
+        if (!$updated) {
+            http_response_code(409);
+            exit('Học bổng không tồn tại, đã được xử lý hoặc nhà cung cấp không hợp lệ.');
+        }
+
+        // 5. Quay lại trang Duyệt học bổng
+        header('Location: /admin?tab=reviews');
         exit;
     }
 }
