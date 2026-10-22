@@ -45,6 +45,20 @@ class Controller
         require __DIR__ . '/../Views/layouts/admin.php';
     }
 
+    protected function providerView(string $view, array $data = []): void
+    {
+        // Chuyển dữ liệu thành các biến để View sử dụng
+        extract($data, EXTR_SKIP);
+
+        // Lấy nội dung trang Provider
+        ob_start();
+        require __DIR__ . '/../Views/' . $view . '.php';
+        $content = ob_get_clean();
+
+        // Hiển thị trong layout riêng của Provider
+        require __DIR__ . '/../Views/layouts/provider.php';
+    }
+
     protected function requireActiveUser(?string $requiredRole = null): array
     {
         // Kiểm tra đăng nhập

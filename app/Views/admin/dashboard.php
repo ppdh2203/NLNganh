@@ -871,9 +871,7 @@ $modalScholarships = array_merge(
                         </button>
 
                     <?php endif; ?>
-
                 </div>
-
             </div>
         </div>
     </div>

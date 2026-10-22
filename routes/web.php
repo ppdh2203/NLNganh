@@ -46,3 +46,29 @@ $router->set404(function () {
     $controller = new \App\Controllers\Controller();
     $controller->sendNotFound();
 });
+
+// ================= PROVIDER =================
+
+// Trang tổng quan
+$router->get(
+    '/provider',
+    '\App\Controllers\ProviderController@index'
+);
+
+// Danh sách học bổng của Provider
+$router->get(
+    '/provider/scholarships',
+    '\App\Controllers\ProviderController@scholarships'
+);
+
+// Trang tạo học bổng
+$router->get(
+    '/provider/scholarships/create',
+    '\App\Controllers\ProviderController@createScholarship'
+);
+
+// Xử lý đăng học bổng
+$router->post(
+    '/provider/scholarships/create',
+    '\App\Controllers\ProviderController@storeScholarship'
+);
