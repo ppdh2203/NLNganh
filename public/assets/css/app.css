@@ -1664,3 +1664,63 @@ body.admin-body { margin: 0; background: var(--background); }
     border-color: #6052db;
     color: #fff;
 }
+
+/* provider */
+/* ================= PROVIDER DASHBOARD ================= */
+
+.provider-dashboard {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    min-height: 65vh;
+}
+
+.provider-dashboard h2 {
+    color: #20213d;
+    font-weight: 700;
+}
+
+.provider-dashboard .provider-card {
+    background: #ffffff;
+    border: 1px solid #e8e7f0;
+    border-radius: 16px;
+    padding: 26px;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(32, 33, 61, 0.025);
+}
+
+.provider-dashboard .provider-card i {
+    color: #6052db;
+}
+
+.provider-dashboard .provider-card h3 {
+    color: #20213d;
+}
+
+.provider-dashboard .btn-provider {
+    background: #6052db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+}
+
+.provider-dashboard .btn-provider:hover {
+    background: #4c40bd;
+    color: white;
+}
+
+.provider-dashboard .btn-provider {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    gap: 8px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.provider-dashboard .btn-provider i {
+    line-height: 1;
+    color: #fff;
+}

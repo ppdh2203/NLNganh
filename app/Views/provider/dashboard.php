@@ -1,4 +1,4 @@
-<section>
+<section class="provider-dashboard">
     <div class="mb-4">
         <h2 class="h4 fw-bold">Tổng quan</h2>
         <p class="text-muted">
@@ -36,17 +36,18 @@
     </div>
 
     <div class="provider-card mt-4">
-        <h3 class="h6 fw-bold">Quản lý học bổng</h3>
+        <div class="d-flex flex-column align-items-start gap-2">
+            <h3 class="h6 fw-bold mb-0">Quản lý học bổng</h3>
 
-        <p class="text-muted">
-            Đăng tải và theo dõi trạng thái xét duyệt các học bổng của bạn.
-        </p>
+            <p class="text-muted mb-1">
+                Đăng tải và theo dõi trạng thái xét duyệt các học bổng của bạn.
+            </p>
 
-        <a href="/provider/scholarships/create"
-           class="btn text-white"
-           style="background: #6052db;">
-            <i class="bi bi-plus-circle me-1"></i>
-            Đăng học bổng mới
-        </a>
+            <a href="/provider/scholarships/create"
+                class="btn btn-provider d-inline-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle"></i>
+                <span>Đăng học bổng mới</span>
+            </a>
+        </div>
     </div>
 </section>

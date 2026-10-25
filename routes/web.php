@@ -72,3 +72,4 @@ $router->post(
     '/provider/scholarships/create',
     '\App\Controllers\ProviderController@storeScholarship'
 );
+

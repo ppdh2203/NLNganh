@@ -1,6 +1,8 @@
 <?php
+
 /** @var array<string, mixed> $provider */
 /** @var string $content */
+
 declare(strict_types=1);
 
 
@@ -147,6 +149,11 @@ $providerName = $provider['organization']
                 </div>
 
                 <form method="POST" action="/logout">
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
                     <button type="submit" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-box-arrow-right me-1"></i>
                         Đăng xuất
@@ -162,4 +169,5 @@ $providerName = $provider['organization']
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

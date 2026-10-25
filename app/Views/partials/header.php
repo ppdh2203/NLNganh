@@ -1,27 +1,39 @@
-
 <?php
-// Mặc định chưa có người dùng đăng nhập
+
+declare(strict_types=1);
+
 $currentUser = null;
 
 if (!empty($_SESSION['user_id'])) {
-    // Lấy thông tin Student đang đăng nhập
     $db = \App\Core\Database::connect();
 
     $stmt = $db->prepare("
-        SELECT u.user_id, u.role, u.avatar, s.student_name
+        SELECT
+            u.user_id,
+            u.role,
+            u.avatar,
+            COALESCE(
+                NULLIF(p.organization, ''),
+                NULLIF(p.provider_name, ''),
+                s.student_name,
+                u.email
+            ) AS display_name
         FROM users u
-        INNER JOIN students s ON s.user_id = u.user_id
+        LEFT JOIN students s
+            ON s.user_id = u.user_id
+        LEFT JOIN providers p
+            ON p.user_id = u.user_id
         WHERE u.user_id = :user_id
-          AND u.role = 'Student'
           AND u.status = 'Active'
+          AND u.role IN ('Student', 'Provider')
         LIMIT 1
     ");
 
     $stmt->execute([
-        'user_id' => $_SESSION['user_id']
+        'user_id' => (int) $_SESSION['user_id']
     ]);
 
-    $currentUser = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    $currentUser = $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
 }
 ?>
 
@@ -57,11 +69,11 @@ if (!empty($_SESSION['user_id'])) {
 
             <!-- Nút menu trên màn hình nhỏ -->
             <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#main-navbar"
-                    aria-controls="main-navbar"
-                    aria-expanded="false"
-                    aria-label="Open menu">
+                data-bs-toggle="collapse"
+                data-bs-target="#main-navbar"
+                aria-controls="main-navbar"
+                aria-expanded="false"
+                aria-label="Open menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -75,55 +87,107 @@ if (!empty($_SESSION['user_id'])) {
                         <!-- Tài khoản Student đã đăng nhập -->
                         <div class="dropdown">
                             <button class="btn d-flex align-items-center gap-2 dropdown-toggle"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <?php if (!empty($currentUser['avatar'])): ?>
-                                    <img src="<?= htmlspecialchars($currentUser['avatar'], ENT_QUOTES, 'UTF-8') ?>"
-                                         alt="Avatar"
-                                         class="rounded-circle object-fit-cover"
-                                         width="36" height="36">
+
+                                    <img
+                                        src="<?= htmlspecialchars((string) $currentUser['avatar'], ENT_QUOTES, 'UTF-8') ?>"
+                                        alt="Avatar"
+                                        class="rounded-circle object-fit-cover"
+                                        width="36"
+                                        height="36">
+
                                 <?php else: ?>
                                     <i class="bi bi-person-circle fs-3"></i>
                                 <?php endif; ?>
 
                                 <span class="fw-semibold">
-                                    <?= htmlspecialchars($currentUser['student_name'], ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars((string) ($currentUser['display_name'] ?? 'Tài khoản'), ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </button>
 
                             <!-- Menu tài khoản -->
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                                <?php if ($currentUser['role'] === 'Provider'): ?>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/provider">
+                                            <i class="bi bi-grid me-2"></i>Tổng quan
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/provider/scholarships">
+                                            <i class="bi bi-journal-text me-2"></i>Quản lý học bổng
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/provider/scholarships/create">
+                                            <i class="bi bi-plus-circle me-2"></i>Đăng học bổng
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/provider/profile">
+                                            <i class="bi bi-building me-2"></i>Thông tin nhà cung cấp
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/provider/settings">
+                                            <i class="bi bi-gear me-2"></i>Cài đặt tài khoản
+                                        </a>
+                                    </li>
+
+                                <?php else: ?>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/profile">
+                                            <i class="bi bi-person me-2"></i>Thông tin cá nhân
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/my-applications">
+                                            <i class="bi bi-file-earmark-text me-2"></i>Hồ sơ đã nộp
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/saved-scholarships">
+                                            <i class="bi bi-bookmark me-2"></i>Học bổng đã lưu
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/settings">
+                                            <i class="bi bi-gear me-2"></i>Cài đặt tài khoản
+                                        </a>
+                                    </li>
+
+                                <?php endif; ?>
+
                                 <li>
-                                    <a class="dropdown-item" href="/profile">
-                                        <i class="bi bi-person me-2"></i>Thông tin cá nhân
-                                    </a>
+                                    <hr class="dropdown-divider">
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="/my-applications">
-                                        <i class="bi bi-file-earmark-text me-2"></i>Hồ sơ đã nộp
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/saved-scholarships">
-                                        <i class="bi bi-bookmark me-2"></i>Học bổng đã lưu
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/settings">
-                                        <i class="bi bi-gear me-2"></i>Cài đặt tài khoản
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
+
                                 <li>
                                     <form action="/logout" method="POST">
-                                        <input type="hidden" name="csrf_token"
-                                               value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
                                         <button type="submit" class="dropdown-item text-danger">
                                             <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
                                         </button>
                                     </form>
                                 </li>
+
                             </ul>
                         </div>
                     <?php else: ?>
@@ -138,31 +202,31 @@ if (!empty($_SESSION['user_id'])) {
 </header>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Các thành phần cần thay đổi
-    const mainMenu = document.getElementById('main-menu');
-    const studentHeaderBtn = document.getElementById('student-header-btn');
-    const providerHeaderBtn = document.getElementById('provider-header-btn');
-    const howSteps = document.getElementById('how-steps');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Các thành phần cần thay đổi
+        const mainMenu = document.getElementById('main-menu');
+        const studentHeaderBtn = document.getElementById('student-header-btn');
+        const providerHeaderBtn = document.getElementById('provider-header-btn');
+        const howSteps = document.getElementById('how-steps');
 
-    // Menu dành cho Student
-    const studentMenu = `
+        // Menu dành cho Student
+        const studentMenu = `
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
         <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
         <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
     `;
 
-    // Menu dành cho Provider
-    const providerMenu = `
+        // Menu dành cho Provider
+        const providerMenu = `
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/scholarships">Scholarships</a></li>
         <li class="nav-item"><a class="nav-link" href="/how-it-works">How It Works</a></li>
         <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
     `;
 
-    // Các bước dành cho Student
-    const studentSteps = `
+        // Các bước dành cho Student
+        const studentSteps = `
         <div class="how-step">
             <div class="how-step-icon">
                 <i class="bi bi-person-plus"></i>
@@ -188,8 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    // Các bước dành cho Provider
-    const providerSteps = `
+        // Các bước dành cho Provider
+        const providerSteps = `
         <div class="how-step">
             <div class="how-step-icon">
                 <i class="bi bi-building-add"></i>
@@ -215,45 +279,45 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    // Khôi phục giao diện đã chọn
-    // Vai trò đăng nhập lấy từ session PHP
-    const loggedInRole = <?= json_encode($_SESSION['user_role'] ?? null) ?>;
+        // Khôi phục giao diện đã chọn
+        // Vai trò đăng nhập lấy từ session PHP
+        const loggedInRole = <?= json_encode($_SESSION['user_role'] ?? null) ?>;
 
-    // Guest dùng lựa chọn công khai, người đăng nhập dùng vai trò thật
-    const selectedRole = loggedInRole
-        ? loggedInRole.toLowerCase()
-        : (sessionStorage.getItem('publicRole') || 'student');
-    function updateRole(role) {
-        const isProvider = role === 'provider';
+        // Guest dùng lựa chọn công khai, người đăng nhập dùng vai trò thật
+        const selectedRole = loggedInRole ?
+            loggedInRole.toLowerCase() :
+            (sessionStorage.getItem('publicRole') || 'student');
 
-        // Thay đổi menu và nội dung Home
-        mainMenu.innerHTML = isProvider ? providerMenu : studentMenu;
+        function updateRole(role) {
+            const isProvider = role === 'provider';
 
-        if (howSteps) {
-            howSteps.innerHTML = isProvider ? providerSteps : studentSteps;
+            // Thay đổi menu và nội dung Home
+            mainMenu.innerHTML = studentMenu;
+            if (howSteps) {
+                howSteps.innerHTML = isProvider ? providerSteps : studentSteps;
+            }
+
+            // Cập nhật nút đang được chọn
+            if (studentHeaderBtn && providerHeaderBtn) {
+                studentHeaderBtn.classList.toggle('active', !isProvider);
+                providerHeaderBtn.classList.toggle('active', isProvider);
+            }
         }
 
-        // Cập nhật nút đang được chọn
-        if (studentHeaderBtn && providerHeaderBtn) {
-            studentHeaderBtn.classList.toggle('active', !isProvider);
-            providerHeaderBtn.classList.toggle('active', isProvider);
+        updateRole(selectedRole);
+
+        // Chuyển giao diện Student
+        // Chỉ Guest mới được chuyển đổi giao diện
+        if (!loggedInRole && studentHeaderBtn && providerHeaderBtn) {
+            studentHeaderBtn.addEventListener('click', function() {
+                sessionStorage.setItem('publicRole', 'student');
+                updateRole('student');
+            });
+
+            providerHeaderBtn.addEventListener('click', function() {
+                sessionStorage.setItem('publicRole', 'provider');
+                updateRole('provider');
+            });
         }
-    }
-
-    updateRole(selectedRole);
-
-    // Chuyển giao diện Student
-    // Chỉ Guest mới được chuyển đổi giao diện
-    if (!loggedInRole && studentHeaderBtn && providerHeaderBtn) {
-        studentHeaderBtn.addEventListener('click', function () {
-            sessionStorage.setItem('publicRole', 'student');
-            updateRole('student');
-        });
-
-        providerHeaderBtn.addEventListener('click', function () {
-            sessionStorage.setItem('publicRole', 'provider');
-            updateRole('provider');
-        });
-    }
-});
+    });
 </script>

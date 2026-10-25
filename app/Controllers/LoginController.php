@@ -83,16 +83,25 @@ class LoginController extends Controller
         // Thông báo đăng nhập thành công
         $_SESSION['login_success'] = true;
 
-        
-        // Điều hướng theo vai trò
-        if ($user['role'] === 'Admin') {
-            header('Location: /admin');
-            exit;
-        }
 
-        // Chuyển về Trang chủ
-        header('Location: /');
-        exit;
+        // Điều hướng theo vai trò
+        switch ($user['role']) {
+            case 'Admin':
+                header('Location: /admin');
+                exit;
+
+            case 'Provider':
+                header('Location: /provider');
+                exit;
+
+            case 'Student':
+                header('Location: /');
+                exit;
+
+            default:
+                http_response_code(403);
+                exit('Vai trò tài khoản không hợp lệ.');
+        }
     }
 
 

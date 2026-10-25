@@ -184,4 +184,113 @@ class Scholarship
 
         return $stmt->rowCount() === 1;
     }
+
+    // Tạo học bổng cùng điều kiện và danh sách giấy tờ
+    public static function create(
+        int $providerId,
+        array $data,
+        array $documents
+    ): int {
+        $db = Database::connect();
+
+        try {
+            // Bắt đầu transaction
+            $db->beginTransaction();
+
+            // 1. Lưu thông tin học bổng
+            $stmt = $db->prepare("
+            INSERT INTO scholarships (
+                user_id,
+                scholarship_name,
+                description,
+                amount,
+                start_date,
+                end_date,
+                status
+            )
+            VALUES (
+                :user_id,
+                :scholarship_name,
+                :description,
+                :amount,
+                :start_date,
+                :end_date,
+                'Pending'
+            )
+        ");
+
+            $stmt->execute([
+                'user_id' => $providerId,
+                'scholarship_name' => $data['scholarship_name'],
+                'description' => $data['description'],
+                'amount' => $data['amount'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date']
+            ]);
+
+            $scholarshipId = (int) $db->lastInsertId();
+
+            // 2. Lưu điều kiện ứng tuyển
+            $stmt = $db->prepare("
+            INSERT INTO application_requirements (
+                scholarship_id,
+                required_gpa,
+                required_year,
+                required_major
+            )
+            VALUES (
+                :scholarship_id,
+                :required_gpa,
+                :required_year,
+                :required_major
+            )
+        ");
+
+            $stmt->execute([
+                'scholarship_id' => $scholarshipId,
+                'required_gpa' => $data['required_gpa'],
+                'required_year' => $data['required_year'],
+                'required_major' => $data['required_major']
+            ]);
+
+            $requirementId = (int) $db->lastInsertId();
+
+            // 3. Lưu các giấy tờ yêu cầu
+            $stmt = $db->prepare("
+            INSERT INTO required_documents (
+                requirement_id,
+                document_name,
+                description,
+                is_required
+            )
+            VALUES (
+                :requirement_id,
+                :document_name,
+                :description,
+                :is_required
+            )
+        ");
+
+            foreach ($documents as $document) {
+                $stmt->execute([
+                    'requirement_id' => $requirementId,
+                    'document_name' => $document['document_name'],
+                    'description' => $document['description'] ?? null,
+                    'is_required' => $document['is_required'] ? 1 : 0
+                ]);
+            }
+
+            // 4. Xác nhận lưu toàn bộ
+            $db->commit();
+
+            return $scholarshipId;
+        } catch (\Throwable $e) {
+            // Có lỗi thì hủy toàn bộ thay đổi
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            throw $e;
+        }
+    }
 }
