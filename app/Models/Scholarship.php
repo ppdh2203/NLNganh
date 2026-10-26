@@ -293,4 +293,31 @@ class Scholarship
             throw $e;
         }
     }
+
+    // Lấy danh sách học bổng của một Provider
+    public static function getByProvider(int $providerId): array
+    {
+        $db = Database::connect();
+
+        $stmt = $db->prepare("
+        SELECT
+            scholarship_id,
+            scholarship_name,
+            description,
+            amount,
+            start_date,
+            end_date,
+            status,
+            created_at
+        FROM scholarships
+        WHERE user_id = :user_id
+        ORDER BY created_at DESC, scholarship_id DESC
+    ");
+
+        $stmt->execute([
+            'user_id' => $providerId
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

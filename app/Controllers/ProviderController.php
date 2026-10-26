@@ -237,4 +237,22 @@ class ProviderController extends Controller
             exit('Không thể đăng học bổng. Vui lòng thử lại.');
         }
     }
+
+    // Trang quản lý học bổng của Provider
+    public function scholarships(): void
+    {
+        $user = $this->requireActiveUser('Provider');
+
+        $scholarships = Scholarship::getByProvider(
+            (int) $user['user_id']
+        );
+
+        $success = $_SESSION['provider_success'] ?? null;
+        unset($_SESSION['provider_success']);
+
+        $this->providerView('provider/scholarships/index', [
+            'scholarships' => $scholarships,
+            'success' => $success
+        ]);
+    }
 }
