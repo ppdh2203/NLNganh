@@ -2,14 +2,27 @@
 
 declare(strict_types=1);
 
-$statuses = [
-    'Pending' => ['Chờ duyệt', 'warning'],
-    'Published' => ['Đã phê duyệt', 'success'],
-    'Rejected' => ['Đã từ chối', 'danger']
-];
+/** @var array $scholarships */
+/** @var string|null $success */
 
 $e = static fn($value): string =>
 htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+
+$tabs = [
+    'Pending' => 'Chờ duyệt',
+    'Published' => 'Đã duyệt',
+    'Rejected' => 'Đã từ chối'
+];
+
+$counts = array_fill_keys(array_keys($tabs), 0);
+
+foreach ($scholarships as $item) {
+    $status = (string) ($item['status'] ?? '');
+
+    if (isset($counts[$status])) {
+        $counts[$status]++;
+    }
+}
 ?>
 
 <section class="provider-dashboard">
@@ -18,9 +31,7 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                 align-items-center gap-3 mb-4">
 
         <div>
-            <h2 class="h4 fw-bold mb-2">
-                Quản lý học bổng
-            </h2>
+            <h2 class="h4 fw-bold mb-2">Quản lý học bổng</h2>
             <p class="text-muted mb-0">
                 Theo dõi danh sách và trạng thái xét duyệt
                 các học bổng đã đăng.
@@ -49,9 +60,8 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 
     <div class="provider-card">
 
-        <div class="d-flex justify-content-between
-                    align-items-center mb-4">
-
+        <div class="d-flex flex-wrap justify-content-between
+                    align-items-center gap-2 mb-4">
             <h3 class="h6 fw-bold mb-0">
                 Danh sách học bổng
             </h3>
@@ -61,90 +71,139 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
             </span>
         </div>
 
-        <?php if (empty($scholarships)): ?>
+        <!-- Ba tab trạng thái -->
+        <ul class="nav nav-tabs provider-scholarship-tabs mb-4"
+            id="scholarshipTabs" role="tablist">
 
-            <div class="text-center py-5">
-                <i class="bi bi-mortarboard fs-1"
-                    style="color:#6052db;"></i>
+            <?php foreach ($tabs as $status => $label): ?>
+                <li class="nav-item" role="presentation">
+                    <button
+                        class="nav-link <?= $status === 'Pending' ? 'active' : '' ?>"
+                        id="tab-<?= $e($status) ?>"
+                        data-bs-toggle="tab"
+                        data-bs-target="#panel-<?= $e($status) ?>"
+                        type="button"
+                        role="tab"
+                        aria-controls="panel-<?= $e($status) ?>"
+                        aria-selected="<?= $status === 'Pending' ? 'true' : 'false' ?>">
 
-                <h4 class="h6 fw-bold mt-3">
-                    Chưa có học bổng nào
-                </h4>
+                        <?= $e($label) ?>
 
-                <p class="text-muted">
-                    Bạn chưa đăng học bổng nào trên hệ thống.
-                </p>
+                        <span class="provider-tab-count">
+                            <?= $counts[$status] ?>
+                        </span>
+                    </button>
+                </li>
+            <?php endforeach; ?>
 
-                <a href="/provider/scholarships/create"
-                    class="btn btn-provider">
-                    Đăng học bổng đầu tiên
-                </a>
-            </div>
+        </ul>
 
-        <?php else: ?>
+        <div class="tab-content" id="scholarshipTabContent">
 
-            <div class="table-responsive">
-                <table class="table align-middle">
+            <?php foreach ($tabs as $status => $label): ?>
 
-                    <thead>
-                        <tr>
-                            <th>Học bổng</th>
-                            <th>Giá trị</th>
-                            <th>Thời gian nhận hồ sơ</th>
-                            <th>Trạng thái</th>
-                        </tr>
-                    </thead>
+                <?php
+                $filtered = array_values(array_filter(
+                    $scholarships,
+                    static fn(array $item): bool => ($item['status'] ?? '') === $status
+                ));
+                ?>
 
-                    <tbody>
-                        <?php foreach ($scholarships as $item): ?>
+                <div
+                    class="tab-pane fade <?= $status === 'Pending' ? 'show active' : '' ?>"
+                    id="panel-<?= $e($status) ?>"
+                    role="tabpanel"
+                    aria-labelledby="tab-<?= $e($status) ?>">
 
-                            <?php
-                            $status = $item['status'];
+                    <?php if (empty($filtered)): ?>
 
-                            [$statusText, $statusColor] =
-                                $statuses[$status]
-                                ?? ['Không xác định', 'secondary'];
-                            ?>
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox fs-1"
+                                style="color:#a5a0d8;"></i>
 
-                            <tr>
-                                <td>
-                                    <div class="fw-semibold">
-                                        <?= $e($item['scholarship_name']) ?>
-                                    </div>
-                                </td>
+                            <p class="text-muted mt-3 mb-0">
+                                Chưa có học bổng nào trong mục
+                                <?= $e(mb_strtolower($label, 'UTF-8')) ?>.
+                            </p>
+                        </div>
 
-                                <td class="fw-semibold">
-                                    <?= number_format(
-                                        (float) $item['amount'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?> đ
-                                </td>
+                    <?php else: ?>
 
-                                <td>
-                                    <div>
-                                        <?= $e($item['start_date']) ?>
-                                    </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle provider-scholarship-table">
 
-                                    <small class="text-muted">
-                                        đến <?= $e($item['end_date']) ?>
-                                    </small>
-                                </td>
+                                <thead>
+                                    <tr>
+                                        <th>Học bổng</th>
+                                        <th>Giá trị</th>
+                                        <th>Thời gian nhận hồ sơ</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
 
-                                <td>
-                                    <span class="badge text-bg-<?= $statusColor ?>">
-                                        <?= $statusText ?>
-                                    </span>
-                                </td>
-                            </tr>
+                                <tbody>
+                                    <?php foreach ($filtered as $item): ?>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-semibold">
+                                                    <?= $e($item['scholarship_name']) ?>
+                                                </div>
+                                            </td>
 
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                                            <td class="fw-semibold">
+                                                <?= number_format(
+                                                    (float) $item['amount'],
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                ) ?> đ
+                                            </td>
 
-        <?php endif; ?>
+                                            <td>
+                                                <div>
+                                                    <?= $e(date(
+                                                        'd/m/Y',
+                                                        strtotime($item['start_date'])
+                                                    )) ?>
+                                                </div>
 
+                                                <small class="text-muted">
+                                                    đến
+                                                    <?= $e(date(
+                                                        'd/m/Y',
+                                                        strtotime($item['end_date'])
+                                                    )) ?>
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $statusInfo = match ($item['status']) {
+                                                    'Pending' => ['Chờ duyệt', 'warning'],
+                                                    'Published' => ['Đã duyệt', 'success'],
+                                                    'Rejected' => ['Đã từ chối', 'danger'],
+                                                    default => ['Không xác định', 'secondary']
+                                                };
+
+                                                [$statusText, $statusColor] = $statusInfo;
+                                                ?>
+
+                                                <span class="badge text-bg-<?= $statusColor ?>">
+                                                    <?= $e($statusText) ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    <?php endif; ?>
+
+                </div>
+
+            <?php endforeach; ?>
+
+        </div>
     </div>
 </section>

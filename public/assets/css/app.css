@@ -1724,3 +1724,61 @@ body.admin-body { margin: 0; background: var(--background); }
     line-height: 1;
     color: #fff;
 }
+
+
+/* ===== Provider Scholarship Tabs ===== */
+
+.provider-scholarship-tabs {
+    gap: 12px;
+    border-bottom: 1px solid #e8e7f0;
+}
+
+.provider-scholarship-tabs .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #667085;
+    font-weight: 600;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    padding: 12px 18px;
+}
+
+.provider-scholarship-tabs .nav-link:hover {
+    color: #6052db;
+    border-color: transparent;
+    border-bottom-color: #d5d0fa;
+}
+
+.provider-scholarship-tabs .nav-link.active {
+    color: #6052db;
+    background: transparent;
+    border-color: transparent;
+    border-bottom-color: #6052db;
+}
+
+.provider-tab-count {
+    background: #f0eefc;
+    color: #6052db;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.provider-scholarship-tabs .nav-link.active .provider-tab-count {
+    background: #6052db;
+    color: #fff;
+}
+
+.provider-scholarship-table th {
+    padding: 14px 12px;
+    font-weight: 600;
+}
+
+.provider-scholarship-table td {
+    padding: 16px 12px;
+    border-color: #e8e7f0;
+}
