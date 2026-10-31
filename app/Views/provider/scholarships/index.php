@@ -138,6 +138,7 @@ foreach ($scholarships as $item) {
                                         <th>Giá trị</th>
                                         <th>Thời gian nhận hồ sơ</th>
                                         <th>Trạng thái</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
 
@@ -190,6 +191,13 @@ foreach ($scholarships as $item) {
                                                 <span class="badge text-bg-<?= $statusColor ?>">
                                                     <?= $e($statusText) ?>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <a href="/provider/scholarships/<?= (int) $item['scholarship_id'] ?>"
+                                                    class="provider-view-link">
+                                                    <i class="bi bi-eye"></i>
+                                                    <span>Chi tiết</span>
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

@@ -147,8 +147,12 @@ class Scholarship
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function review(int $scholarshipId, string $action): bool
-    {
+
+    public static function review(
+        int $scholarshipId,
+        string $action,
+        ?string $reason = null
+    ): bool {
         $newStatus = match ($action) {
             'approve' => 'Published',
             'reject' => 'Rejected',
@@ -159,11 +163,17 @@ class Scholarship
             return false;
         }
 
+        if ($action === 'reject' && ($reason === null || trim($reason) === '')) {
+            return false;
+        }
+
         $db = Database::connect();
 
         $sql = "
         UPDATE scholarships
-        SET status = :new_status
+        SET
+            status = :new_status,
+            rejection_reason = :rejection_reason
         WHERE scholarship_id = :scholarship_id
           AND status = 'Pending'
           AND EXISTS (
@@ -179,11 +189,13 @@ class Scholarship
 
         $stmt->execute([
             'new_status' => $newStatus,
+            'rejection_reason' => $action === 'reject' ? $reason : null,
             'scholarship_id' => $scholarshipId
         ]);
 
         return $stmt->rowCount() === 1;
     }
+
 
     // Tạo học bổng cùng điều kiện và danh sách giấy tờ
     public static function create(
@@ -319,5 +331,38 @@ class Scholarship
         ]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lấy chi tiết học bổng thuộc Provider đang đăng nhập
+    public static function findByProvider(
+        int $scholarshipId,
+        int $providerId
+    ): array|false {
+        $db = Database::connect();
+
+        $stmt = $db->prepare("
+        SELECT
+            scholarship_id,
+            scholarship_name,
+            description,
+            amount,
+            start_date,
+            start_date,
+            end_date,
+            status,
+            rejection_reason,
+            created_at
+        FROM scholarships
+        WHERE scholarship_id = :scholarship_id
+          AND user_id = :user_id
+        LIMIT 1
+    ");
+
+        $stmt->execute([
+            'scholarship_id' => $scholarshipId,
+            'user_id' => $providerId
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

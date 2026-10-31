@@ -4,6 +4,7 @@
 /** @var array $accounts */
 /** @var array $pendingProviders */
 /** @var array $approvedProviders */
+/** @var array $pendingScholarships */
 /** @var array $rejectedProviders */
 
 ?>
@@ -834,10 +835,17 @@ $modalScholarships = array_merge(
 
                                 <input type="hidden" name="action" value="reject">
 
-                                <button type="submit" class="btn btn-outline-danger">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#rejectScholarshipModal<?= $scholarshipId ?>"
+                                    data-bs-dismiss="modal">
                                     <i class="bi bi-x-circle me-1"></i>
                                     Từ chối
                                 </button>
+
                             </form>
 
                             <form method="POST"
@@ -876,6 +884,95 @@ $modalScholarships = array_merge(
         </div>
     </div>
 <?php endforeach; ?>
+
+<?php foreach ($pendingScholarships as $scholarship): ?>
+    <?php $id = (int) $scholarship['scholarship_id']; ?>
+
+    <div class="modal fade"
+         id="rejectScholarshipModal<?= $id ?>"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form method="POST"
+                      action="/admin/scholarships/review">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">
+                            Từ chối học bổng
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Đóng"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="mb-3">
+                            Học bổng:
+                            <strong>
+                                <?= htmlspecialchars(
+                                    $scholarship['scholarship_name'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>
+                            </strong>
+                        </p>
+
+                        <label for="reason<?= $id ?>"
+                               class="form-label fw-semibold">
+                            Lý do từ chối
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <textarea
+                            id="reason<?= $id ?>"
+                            name="rejection_reason"
+                            class="form-control"
+                            rows="4"
+                            maxlength="1000"
+                            required
+                            placeholder="Nhập lý do để nhà cung cấp biết và điều chỉnh..."></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="<?= htmlspecialchars(
+                                   $_SESSION['csrf_token'] ?? '',
+                                   ENT_QUOTES,
+                                   'UTF-8'
+                               ) ?>">
+
+                        <input type="hidden"
+                               name="scholarship_id"
+                               value="<?= $id ?>">
+
+                        <input type="hidden"
+                               name="action"
+                               value="reject">
+
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Xác nhận từ chối
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+
 
 <!-- QUẢN LÝ HỌC BỔNG -->
 <section data-admin-panel="scholarships" hidden>

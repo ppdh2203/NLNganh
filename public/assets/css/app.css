@@ -1782,3 +1782,97 @@ body.admin-body { margin: 0; background: var(--background); }
     padding: 16px 12px;
     border-color: #e8e7f0;
 }
+
+
+/* Nút xem chi tiết học bổng */
+.provider-view-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 8px 15px;
+    border: 1px solid #dcd7fa;
+    border-radius: 8px;
+
+    background-color: #f7f5ff;
+    color: #6052db;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.provider-view-link i {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Khi rê chuột vào */
+.provider-view-link:hover {
+    background-color: #6052db;
+    border-color: #6052db;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Khi dùng bàn phím chọn nút */
+.provider-view-link:focus-visible {
+    outline: 2px solid #6052db;
+    outline-offset: 3px;
+}
+
+/* Icon và chữ cùng màu với nút */
+.provider-view-link i,
+.provider-view-link span {
+    color: inherit;
+}
+
+/* Khi hover, cả icon và chữ đều chuyển trắng */
+.provider-view-link:hover,
+.provider-view-link:hover i,
+.provider-view-link:hover span {
+    color: #ffffff !important;
+}
+
+/* Căn chỉnh icon */
+.provider-view-link i {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+
+/* Trang chi tiết học bổng Provider */
+.provider-scholarship-detail {
+    min-height: auto;
+    padding-bottom: 24px;
+}
+
+/* Nút chỉnh sửa cuối trang */
+.provider-scholarship-detail .scholarship-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 16px;
+    padding: 0;
+}
+
+.provider-scholarship-detail .scholarship-edit-actions .btn {
+    background-color: #6052db;
+    border-color: #6052db;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.provider-scholarship-detail .scholarship-edit-actions .btn:hover {
+    background-color: #3c3394;
+    border-color: #3c3394;
+    color: #fff;
+}

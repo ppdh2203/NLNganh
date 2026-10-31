@@ -344,10 +344,8 @@ class AdminController extends Controller
 
     public function reviewScholarship(): void
     {
-        // 1. Chỉ Admin đang hoạt động mới được xét duyệt
         $this->requireActiveUser('Admin');
 
-        // 2. Kiểm tra CSRF
         $token = $_POST['csrf_token'] ?? '';
 
         if (
@@ -360,7 +358,6 @@ class AdminController extends Controller
             exit('Phiên làm việc không hợp lệ.');
         }
 
-        // 3. Kiểm tra ID học bổng và hành động
         $scholarshipId = filter_var(
             $_POST['scholarship_id'] ?? null,
             FILTER_VALIDATE_INT
@@ -370,7 +367,6 @@ class AdminController extends Controller
 
         if (
             !$scholarshipId ||
-            $scholarshipId <= 0 ||
             !is_string($action) ||
             !in_array($action, ['approve', 'reject'], true)
         ) {
@@ -378,15 +374,35 @@ class AdminController extends Controller
             exit('Yêu cầu xét duyệt không hợp lệ.');
         }
 
-        // 4. Cập nhật trạng thái thông qua Model
-        $updated = Scholarship::review($scholarshipId, $action);
+        $reason = null;
+
+        if ($action === 'reject') {
+            $input = $_POST['rejection_reason'] ?? '';
+
+            if (!is_string($input)) {
+                http_response_code(422);
+                exit('Lý do từ chối không hợp lệ.');
+            }
+
+            $reason = trim($input);
+
+            if ($reason === '' || mb_strlen($reason, 'UTF-8') > 1000) {
+                http_response_code(422);
+                exit('Vui lòng nhập lý do từ chối (tối đa 1000 ký tự).');
+            }
+        }
+
+        $updated = Scholarship::review(
+            $scholarshipId,
+            $action,
+            $reason
+        );
 
         if (!$updated) {
             http_response_code(409);
-            exit('Học bổng không tồn tại, đã được xử lý hoặc nhà cung cấp không hợp lệ.');
+            exit('Học bổng không tồn tại hoặc đã được xử lý.');
         }
 
-        // 5. Quay lại trang Duyệt học bổng
         header('Location: /admin?tab=reviews');
         exit;
     }

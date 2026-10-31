@@ -255,4 +255,29 @@ class ProviderController extends Controller
             'success' => $success
         ]);
     }
+
+    // Xem chi tiết học bổng của Provider
+    public function showScholarship(int $id): void
+    {
+        $user = $this->requireActiveUser('Provider');
+
+        $scholarship = Scholarship::findByProvider(
+            $id,
+            (int) $user['user_id']
+        );
+
+        if (!$scholarship) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $requirements = Scholarship::getRequirements($id);
+        $documents = Scholarship::getRequiredDocuments($id);
+
+        $this->providerView('provider/scholarships/show', [
+            'scholarship' => $scholarship,
+            'requirements' => $requirements,
+            'documents' => $documents
+        ]);
+    }
 }

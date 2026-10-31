@@ -72,4 +72,8 @@ $router->post(
     '/provider/scholarships/create',
     '\App\Controllers\ProviderController@storeScholarship'
 );
+$router->get(
+    '/provider/scholarships/{id:\d+}',
+    '\App\Controllers\ProviderController@showScholarship'
+);
 
