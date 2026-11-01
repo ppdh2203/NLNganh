@@ -792,4 +792,181 @@ class ProviderController extends Controller
             exit('Không thể cập nhật thông tin. Vui lòng thử lại.');
         }
     }
+
+    // Hiển thị trang cài đặt tài khoản Provider
+    public function settings(): void
+    {
+        $user = $this->requireActiveUser('Provider');
+
+        $db = Database::connect();
+
+        $stmt = $db->prepare("
+        SELECT email, status
+        FROM users
+        WHERE user_id = :user_id
+        LIMIT 1
+    ");
+
+        $stmt->execute([
+            'user_id' => (int) $user['user_id']
+        ]);
+
+        $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$account) {
+            $this->sendNotFound();
+            return;
+        }
+
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $success = $_SESSION['provider_settings_success'] ?? null;
+        $error = $_SESSION['provider_settings_error'] ?? null;
+
+        unset(
+            $_SESSION['provider_settings_success'],
+            $_SESSION['provider_settings_error']
+        );
+
+        $this->providerView('provider/settings', [
+            'account' => $account,
+            'success' => $success,
+            'error' => $error
+        ]);
+    }
+
+
+    // Xử lý đổi mật khẩu Provider
+    public function updatePassword(): void
+    {
+        $user = $this->requireActiveUser('Provider');
+
+        $token = $_POST['csrf_token'] ?? '';
+
+        if (
+            !is_string($token) ||
+            !isset($_SESSION['csrf_token']) ||
+            !is_string($_SESSION['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $token)
+        ) {
+            http_response_code(403);
+            exit('Yêu cầu không hợp lệ.');
+        }
+
+        $currentPassword = $_POST['current_password'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (
+            !is_string($currentPassword) ||
+            !is_string($newPassword) ||
+            !is_string($confirmPassword)
+        ) {
+            http_response_code(400);
+            exit('Dữ liệu không hợp lệ.');
+        }
+
+        $redirectError = static function (string $message): void {
+            $_SESSION['provider_settings_error'] = $message;
+            header('Location: /provider/settings');
+            exit;
+        };
+
+        if (
+            $currentPassword === '' ||
+            $newPassword === '' ||
+            $confirmPassword === ''
+        ) {
+            $redirectError('Vui lòng nhập đầy đủ các trường mật khẩu.');
+        }
+
+        if (strlen($newPassword) < 8 || strlen($newPassword) > 72) {
+            $redirectError('Mật khẩu mới phải có từ 8 đến 72 byte.');
+        }
+
+        if (!hash_equals($newPassword, $confirmPassword)) {
+            $redirectError('Xác nhận mật khẩu mới không khớp.');
+        }
+
+        $db = Database::connect();
+
+        try {
+            $db->beginTransaction();
+
+            $stmt = $db->prepare("
+            SELECT password_hash
+            FROM users
+            WHERE user_id = :user_id
+              AND role = 'Provider'
+              AND status = 'Active'
+            LIMIT 1
+            FOR UPDATE
+        ");
+
+            $stmt->execute([
+                'user_id' => (int) $user['user_id']
+            ]);
+
+            $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$account) {
+                $db->rollBack();
+                $redirectError('Tài khoản không còn hợp lệ.');
+            }
+
+            if (!password_verify(
+                $currentPassword,
+                $account['password_hash']
+            )) {
+                $db->rollBack();
+                $redirectError('Mật khẩu hiện tại không chính xác.');
+            }
+
+            if (password_verify(
+                $newPassword,
+                $account['password_hash']
+            )) {
+                $db->rollBack();
+                $redirectError('Mật khẩu mới phải khác mật khẩu hiện tại.');
+            }
+
+            $newHash = password_hash(
+                $newPassword,
+                PASSWORD_DEFAULT
+            );
+
+            $stmt = $db->prepare("
+            UPDATE users
+            SET password_hash = :password_hash
+            WHERE user_id = :user_id
+        ");
+
+            $stmt->execute([
+                'password_hash' => $newHash,
+                'user_id' => (int) $user['user_id']
+            ]);
+
+            $db->commit();
+
+            // Đổi session ID sau khi thay đổi thông tin bảo mật
+            session_regenerate_id(true);
+
+            $_SESSION['provider_settings_success'] =
+                'Đổi mật khẩu thành công!';
+
+            header('Location: /provider/settings');
+            exit;
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            error_log('Update Provider password failed: ' . $e->getMessage());
+
+            http_response_code(500);
+            exit('Không thể đổi mật khẩu. Vui lòng thử lại.');
+        }
+    }
 }

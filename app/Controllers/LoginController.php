@@ -65,7 +65,7 @@ class LoginController extends Controller
 
         // Kiểm tra tài khoản và mật khẩu
         if (!$user || !password_verify($password, $user['password_hash'])) {
-            exit('Email hoặc mật khẩu không chính xác.');
+            $this->loginError('Email hoặc mật khẩu không chính xác.');
         }
 
         // Chỉ cho phép tài khoản Active đăng nhập

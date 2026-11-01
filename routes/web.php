@@ -100,3 +100,15 @@ $router->post(
     '/provider/profile',
     '\App\Controllers\ProviderController@updateProfile'
 );
+
+// Trang cài đặt tài khoản Provider
+$router->get(
+    '/provider/settings',
+    '\App\Controllers\ProviderController@settings'
+);
+
+// Xử lý đổi mật khẩu Provider
+$router->post(
+    '/provider/settings',
+    '\App\Controllers\ProviderController@updatePassword'
+);
