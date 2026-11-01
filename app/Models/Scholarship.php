@@ -347,7 +347,6 @@ class Scholarship
             description,
             amount,
             start_date,
-            start_date,
             end_date,
             status,
             rejection_reason,
@@ -364,5 +363,138 @@ class Scholarship
         ]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    public static function resubmitRejected(
+        int $scholarshipId,
+        int $providerId,
+        array $data,
+        array $documents
+    ): bool {
+        $db = Database::connect();
+
+        try {
+            $db->beginTransaction();
+
+            // Khóa học bổng để tránh cập nhật đồng thời.
+            $stmt = $db->prepare("
+            SELECT scholarship_id
+            FROM scholarships
+            WHERE scholarship_id = :id
+              AND user_id = :provider_id
+              AND status = 'Rejected'
+            FOR UPDATE
+        ");
+            $stmt->execute([
+                'id' => $scholarshipId,
+                'provider_id' => $providerId
+            ]);
+
+            if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+                $db->rollBack();
+                return false;
+            }
+
+            // Cập nhật học bổng cũ, chuyển về chờ duyệt.
+            $stmt = $db->prepare("
+            UPDATE scholarships
+            SET scholarship_name = :name,
+                description = :description,
+                amount = :amount,
+                start_date = :start_date,
+                end_date = :end_date,
+                status = 'Pending',
+                rejection_reason = NULL
+            WHERE scholarship_id = :id
+              AND user_id = :provider_id
+              AND status = 'Rejected'
+        ");
+            $stmt->execute([
+                'name' => $data['scholarship_name'],
+                'description' => $data['description'],
+                'amount' => $data['amount'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'id' => $scholarshipId,
+                'provider_id' => $providerId
+            ]);
+
+            // Tìm bộ điều kiện ứng tuyển hiện có.
+            $stmt = $db->prepare("
+            SELECT requirement_id
+            FROM application_requirements
+            WHERE scholarship_id = :id
+            FOR UPDATE
+        ");
+            $stmt->execute(['id' => $scholarshipId]);
+
+            $requirementId = $stmt->fetchColumn();
+
+            if ($requirementId === false) {
+                $stmt = $db->prepare("
+                INSERT INTO application_requirements
+                    (scholarship_id, required_gpa,
+                     required_year, required_major)
+                VALUES (:id, :gpa, :year, :major)
+            ");
+                $stmt->execute([
+                    'id' => $scholarshipId,
+                    'gpa' => $data['required_gpa'],
+                    'year' => $data['required_year'],
+                    'major' => $data['required_major']
+                ]);
+
+                $requirementId = (int) $db->lastInsertId();
+            } else {
+                $requirementId = (int) $requirementId;
+
+                $stmt = $db->prepare("
+                UPDATE application_requirements
+                SET required_gpa = :gpa,
+                    required_year = :year,
+                    required_major = :major
+                WHERE requirement_id = :id
+            ");
+                $stmt->execute([
+                    'gpa' => $data['required_gpa'],
+                    'year' => $data['required_year'],
+                    'major' => $data['required_major'],
+                    'id' => $requirementId
+                ]);
+            }
+
+            // Thay danh sách giấy tờ của bộ điều kiện này.
+            $stmt = $db->prepare("
+            DELETE FROM required_documents
+            WHERE requirement_id = :id
+        ");
+            $stmt->execute(['id' => $requirementId]);
+
+            $stmt = $db->prepare("
+            INSERT INTO required_documents
+                (requirement_id, document_name,
+                 description, is_required)
+            VALUES (:id, :name, :description, :required)
+        ");
+
+            foreach ($documents as $document) {
+                $stmt->execute([
+                    'id' => $requirementId,
+                    'name' => $document['document_name'],
+                    'description' => $document['description'],
+                    'required' => $document['is_required'] ? 1 : 0
+                ]);
+            }
+
+            $db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            throw $e;
+        }
     }
 }

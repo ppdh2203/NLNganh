@@ -12,6 +12,7 @@ if (!empty($_SESSION['user_id'])) {
             u.user_id,
             u.role,
             u.avatar,
+            p.provider_logo,
             COALESCE(
                 NULLIF(p.organization, ''),
                 NULLIF(p.provider_name, ''),
@@ -90,10 +91,16 @@ if (!empty($_SESSION['user_id'])) {
                                 type="button"
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <?php if (!empty($currentUser['avatar'])): ?>
+                                <?php
+                                $headerAvatar = $currentUser['role'] === 'Provider'
+                                    ? ($currentUser['provider_logo'] ?: $currentUser['avatar'])
+                                    : $currentUser['avatar'];
+                                ?>
+
+                                <?php if (!empty($headerAvatar)): ?>
 
                                     <img
-                                        src="<?= htmlspecialchars((string) $currentUser['avatar'], ENT_QUOTES, 'UTF-8') ?>"
+                                        src="<?= htmlspecialchars((string) $headerAvatar, ENT_QUOTES, 'UTF-8') ?>"
                                         alt="Avatar"
                                         class="rounded-circle object-fit-cover"
                                         width="36"

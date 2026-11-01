@@ -72,8 +72,31 @@ $router->post(
     '/provider/scholarships/create',
     '\App\Controllers\ProviderController@storeScholarship'
 );
+
+
 $router->get(
-    '/provider/scholarships/{id:\d+}',
+    '/provider/scholarships/(\d+)/edit',
+    '\App\Controllers\ProviderController@editScholarship'
+);
+
+$router->post(
+    '/provider/scholarships/(\d+)/edit',
+    '\App\Controllers\ProviderController@updateScholarship'
+);
+
+$router->get(
+    '/provider/scholarships/(\d+)',
     '\App\Controllers\ProviderController@showScholarship'
 );
 
+// Xem thông tin nhà cung cấp
+$router->get(
+    '/provider/profile',
+    '\App\Controllers\ProviderController@profile'
+);
+
+// Cập nhật thông tin nhà cung cấp
+$router->post(
+    '/provider/profile',
+    '\App\Controllers\ProviderController@updateProfile'
+);
