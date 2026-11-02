@@ -86,7 +86,7 @@ if (!empty($_SESSION['user_id'])) {
                 <div class="header-actions">
                     <?php if ($currentUser): ?>
                         <!-- Tài khoản Student đã đăng nhập -->
-                        <div class="dropdown">
+                        <div class="dropdown account-dropdown">
                             <button class="btn d-flex align-items-center gap-2 dropdown-toggle"
                                 type="button"
                                 data-bs-toggle="dropdown"

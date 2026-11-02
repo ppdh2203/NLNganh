@@ -169,6 +169,25 @@ body {
         margin-left: auto;
     }
 }
+
+/* Dropdown tài khoản */
+.site-header .account-dropdown .dropdown-item:hover,
+.site-header .account-dropdown .dropdown-item:focus {
+    background-color: var(--light-blue);
+    color: var(--primary-dark);
+}
+
+.site-header .account-dropdown .dropdown-item:hover i,
+.site-header .account-dropdown .dropdown-item:focus i {
+    color: inherit;
+}
+
+/* Đăng xuất giữ màu đỏ */
+.site-header .account-dropdown .dropdown-item.text-danger:hover,
+.site-header .account-dropdown .dropdown-item.text-danger:focus {
+    background-color: #fff1f2;
+    color: #dc3545 !important;
+}
 /* =========================
    FOOTER
 ========================= */
@@ -1875,4 +1894,42 @@ body.admin-body { margin: 0; background: var(--background); }
     background-color: #3c3394;
     border-color: #3c3394;
     color: #fff;
+}
+
+/* Nút xóa giấy tờ học bổng */
+.provider-dashboard .remove-document {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    background-color: #fff;
+}
+
+.provider-dashboard .remove-document i {
+    color: inherit;
+}
+
+.provider-dashboard .remove-document:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.provider-dashboard .remove-document:hover i {
+    color: inherit;
+}
+
+/* Nút Thay đổi logo - màu tím chủ đạo */
+.provider-dashboard .btn-outline-provider {
+    color: #6052db;
+    border: 1px solid #6052db;
+    background-color: #fff;
+}
+
+.provider-dashboard .btn-outline-provider:hover {
+    color: #fff;
+    background-color: #6052db;
+    border-color: #6052db;
+}
+
+.provider-dashboard .btn-outline-provider i {
+    color: inherit;
 }

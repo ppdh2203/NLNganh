@@ -80,7 +80,7 @@ $logo = (string) ($provider['provider_logo'] ?? '');
                     </div>
 
                     <label for="providerLogo"
-                        class="btn btn-outline-primary btn-sm">
+                        class="btn btn-outline-provider btn-sm">
                         <i class="bi bi-image me-1"></i>
                         Thay đổi logo
                     </label>
