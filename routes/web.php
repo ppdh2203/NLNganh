@@ -112,3 +112,20 @@ $router->post(
     '/provider/settings',
     '\App\Controllers\ProviderController@updatePassword'
 );
+
+// Student
+//STudent
+
+// ================= STUDENT =================
+
+// Xem thông tin cá nhân
+$router->get(
+    '/profile',
+    '\App\Controllers\StudentController@profile'
+);
+
+// Cập nhật thông tin cá nhân
+$router->post(
+    '/profile',
+    '\App\Controllers\StudentController@updateProfile'
+);

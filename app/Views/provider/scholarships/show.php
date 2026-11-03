@@ -11,7 +11,7 @@ htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
 
 $statusInfo = match ($scholarship['status']) {
     'Pending' => ['Chờ duyệt', 'warning'],
-    'Published' => ['Đã duyệt', 'success'],
+    'Published' => ['Đã đăng', 'success'],
     'Rejected' => ['Đã từ chối', 'danger'],
     default => ['Không xác định', 'secondary']
 };

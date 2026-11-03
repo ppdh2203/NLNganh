@@ -60,10 +60,11 @@ class RegisterController extends Controller
 
         // Kiểm tra các trường bắt buộc
         if (
-            $fullName === '' || $school === '' ||
-            $major === '' || $address === '' ||
-            $cohort === '' || $phone === '' ||
-            $email === '' || $password === ''
+            $fullName === '' || $studentCode === '' ||
+            $school === '' || $major === '' ||
+            $address === '' || $cohort === '' ||
+            $phone === '' || $email === '' ||
+            $password === ''
         ) {
             exit('Vui lòng nhập đầy đủ thông tin.');
         }
@@ -141,6 +142,24 @@ class RegisterController extends Controller
             exit('Số điện thoại này đã được đăng ký.');
         }
 
+        // Kiểm tra mã sinh viên trùng trong cùng trường
+        $stmt = $db->prepare("
+            SELECT user_id
+            FROM students
+            WHERE student_school = :school
+            AND student_code = :student_code
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'school' => $school,
+            'student_code' => $studentCode
+        ]);
+
+        if ($stmt->fetch()) {
+            exit('Mã sinh viên này đã được đăng ký tại trường đã nhập.');
+        }
+
         // Lưu tài khoản và thông tin sinh viên trong cùng một giao dịch
         try {
             $db->beginTransaction();
@@ -176,7 +195,7 @@ class RegisterController extends Controller
             $stmt->execute([
                 'user_id' => $userId,
                 'student_name' => $fullName,
-                'student_code' => $studentCode !== '' ? $studentCode : null,
+                'student_code' => $studentCode,
                 'student_school' => $school,
                 'student_major' => $major,
                 'student_address' => $address,
@@ -484,7 +503,7 @@ class RegisterController extends Controller
             if ($logoSavedPath !== null && is_file($logoSavedPath)) {
                 unlink($logoSavedPath);
             }
-            
+
             error_log('[PROVIDER REGISTER ERROR] ' . $e->getMessage());
 
             if ($e instanceof \PDOException && $e->getCode() === '23000') {
