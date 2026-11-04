@@ -40,6 +40,86 @@ class Scholarship
     }
 
 
+
+    // Tìm kiếm và lọc học bổng công khai
+    public static function searchPublished(
+        string $keyword = '',
+        string $major = '',
+        ?float $minAmount = null,
+        ?float $maxAmount = null
+    ): array {
+        $db = Database::connect();
+
+        $sql = "
+        SELECT
+            s.scholarship_id,
+            s.scholarship_name,
+            s.description,
+            s.amount,
+            s.start_date,
+            s.end_date,
+            p.provider_name
+        FROM scholarships s
+        INNER JOIN providers p
+            ON s.user_id = p.user_id
+        LEFT JOIN application_requirements ar
+            ON ar.scholarship_id = s.scholarship_id
+        WHERE s.status = 'Published'
+          AND s.start_date <= CURDATE()
+          AND s.end_date >= CURDATE()
+    ";
+
+        $params = [];
+
+        // Tìm theo tên học bổng hoặc tổ chức cấp
+        if ($keyword !== '') {
+            $sql .= "
+            AND (
+                s.scholarship_name LIKE :keyword_name
+                OR p.provider_name LIKE :keyword_provider
+            )
+        ";
+
+            $params['keyword_name'] = '%' . $keyword . '%';
+            $params['keyword_provider'] = '%' . $keyword . '%';
+        }
+
+        // Lọc theo ngành học yêu cầu
+        if ($major !== '') {
+            $sql .= "
+            AND (
+                ar.required_major LIKE :major
+                OR ar.required_major IS NULL
+                OR TRIM(ar.required_major) = ''
+            )
+        ";
+
+            $params['major'] = '%' . $major . '%';
+        }
+
+        // Lọc giá trị học bổng tối thiểu
+        if ($minAmount !== null) {
+            $sql .= " AND s.amount >= :min_amount";
+            $params['min_amount'] = $minAmount;
+        }
+
+        // Lọc giá trị học bổng tối đa
+        if ($maxAmount !== null) {
+            $sql .= " AND s.amount <= :max_amount";
+            $params['max_amount'] = $maxAmount;
+        }
+
+        $sql .= "
+        ORDER BY s.created_at DESC, s.scholarship_id DESC
+        LIMIT 100
+    ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Lấy thông tin chi tiết một học bổng theo ID
     public static function findById(int $id): array|false
     {

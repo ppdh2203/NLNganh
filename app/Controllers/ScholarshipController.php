@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controllers;
@@ -9,18 +10,47 @@ class ScholarshipController extends Controller
 {
     public function index(): void
     {
-        // Lấy danh sách học bổng đang công khai
-        $scholarships = Scholarship::getPublished(100);
+        // Nhận dữ liệu tìm kiếm từ URL
+        $keyword = trim((string) ($_GET['keyword'] ?? ''));
+        $major = trim((string) ($_GET['major'] ?? ''));
 
-        // Truyền dữ liệu sang trang danh sách
+        $minAmountInput = trim((string) ($_GET['min_amount'] ?? ''));
+        $maxAmountInput = trim((string) ($_GET['max_amount'] ?? ''));
+
+        // Kiểm tra giá trị tiền hợp lệ
+        $minAmount = (
+            $minAmountInput !== ''
+            && is_numeric($minAmountInput)
+            && (float) $minAmountInput >= 0
+        ) ? (float) $minAmountInput : null;
+
+        $maxAmount = (
+            $maxAmountInput !== ''
+            && is_numeric($maxAmountInput)
+            && (float) $maxAmountInput >= 0
+        ) ? (float) $maxAmountInput : null;
+
+        // Gọi Model tìm kiếm học bổng
+        $scholarships = Scholarship::searchPublished(
+            $keyword,
+            $major,
+            $minAmount,
+            $maxAmount
+        );
+
+        // Truyền dữ liệu sang View
         $this->view('scholarships/index', [
-            'scholarships' => $scholarships
+            'scholarships' => $scholarships,
+            'keyword' => $keyword,
+            'major' => $major,
+            'minAmount' => $minAmountInput,
+            'maxAmount' => $maxAmountInput
         ]);
     }
 
-    
+
     // Hiển thị thông tin chi tiết một học bổng
-    
+
     // Hiển thị chi tiết học bổng
     public function show(string $id): void
     {
@@ -51,5 +81,4 @@ class ScholarshipController extends Controller
             'documents' => $documents
         ]);
     }
-
 }
