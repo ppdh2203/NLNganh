@@ -42,12 +42,9 @@ class Scholarship
 
 
     // Tìm kiếm và lọc học bổng công khai
-    public static function searchPublished(
-        string $keyword = '',
-        string $major = '',
-        ?float $minAmount = null,
-        ?float $maxAmount = null
-    ): array {
+    // Tìm học bổng công khai theo tên
+    public static function searchPublished(string $keyword = ''): array
+    {
         $db = Database::connect();
 
         $sql = "
@@ -60,10 +57,7 @@ class Scholarship
             s.end_date,
             p.provider_name
         FROM scholarships s
-        INNER JOIN providers p
-            ON s.user_id = p.user_id
-        LEFT JOIN application_requirements ar
-            ON ar.scholarship_id = s.scholarship_id
+        INNER JOIN providers p ON p.user_id = s.user_id
         WHERE s.status = 'Published'
           AND s.start_date <= CURDATE()
           AND s.end_date >= CURDATE()
@@ -71,42 +65,9 @@ class Scholarship
 
         $params = [];
 
-        // Tìm theo tên học bổng hoặc tổ chức cấp
         if ($keyword !== '') {
-            $sql .= "
-            AND (
-                s.scholarship_name LIKE :keyword_name
-                OR p.provider_name LIKE :keyword_provider
-            )
-        ";
-
-            $params['keyword_name'] = '%' . $keyword . '%';
-            $params['keyword_provider'] = '%' . $keyword . '%';
-        }
-
-        // Lọc theo ngành học yêu cầu
-        if ($major !== '') {
-            $sql .= "
-            AND (
-                ar.required_major LIKE :major
-                OR ar.required_major IS NULL
-                OR TRIM(ar.required_major) = ''
-            )
-        ";
-
-            $params['major'] = '%' . $major . '%';
-        }
-
-        // Lọc giá trị học bổng tối thiểu
-        if ($minAmount !== null) {
-            $sql .= " AND s.amount >= :min_amount";
-            $params['min_amount'] = $minAmount;
-        }
-
-        // Lọc giá trị học bổng tối đa
-        if ($maxAmount !== null) {
-            $sql .= " AND s.amount <= :max_amount";
-            $params['max_amount'] = $maxAmount;
+            $sql .= " AND s.scholarship_name LIKE :keyword";
+            $params['keyword'] = '%' . $keyword . '%';
         }
 
         $sql .= "
@@ -116,6 +77,40 @@ class Scholarship
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lấy dữ liệu học bổng phục vụ tìm kiếm ngữ nghĩa
+    public static function getSemanticSearchData(): array
+    {
+        $db = Database::connect();
+
+        $sql = "
+        SELECT
+            s.scholarship_id,
+            s.scholarship_name,
+            s.description,
+            s.amount,
+            s.start_date,
+            s.end_date,
+            p.provider_name,
+            ar.required_gpa,
+            ar.required_year,
+            ar.required_major
+        FROM scholarships s
+        INNER JOIN providers p
+            ON p.user_id = s.user_id
+        LEFT JOIN application_requirements ar
+            ON ar.scholarship_id = s.scholarship_id
+        WHERE s.status = 'Published'
+          AND s.start_date <= CURDATE()
+          AND s.end_date >= CURDATE()
+        ORDER BY s.scholarship_id DESC
+    ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -13,30 +13,31 @@
     <section class="py-5">
         <div class="container">
             <!-- Giao diện tìm kiếm ngữ nghĩa, sẽ tích hợp AI sau -->
-            <div class="bg-white border rounded-4 p-4 mb-4">
-                <h2 class="h5 fw-bold mb-2">Gợi ý học bổng phù hợp</h2>
+            <!-- Tìm kiếm học bổng -->
+            <form action="/scholarships" method="GET"
+                class="bg-white border rounded-4 p-4 mb-4">
+
+                <h2 class="h5 fw-bold mb-2">Tìm kiếm học bổng</h2>
+
                 <p class="small mb-3" style="color:var(--text-muted);">
-                    Mô tả nhu cầu của bạn để tìm những học bổng phù hợp.
-                    Chức năng gợi ý thông minh sẽ được phát triển sau.
+                    Tìm theo tên học bổng hoặc mô tả nhu cầu của bạn
+                    để khám phá những cơ hội phù hợp.
                 </p>
-                <p class="small mb-3" style="color:var(--text-muted);">Describe your needs to find suitable scholarship opportunities.</p>
-                <div class="d-flex gap-2 align-items-stretch">
+                <div class="d-flex gap-2">
                     <input type="text"
+                        name="keyword"
                         class="form-control flex-grow-1"
                         style="min-width:0;"
-                        placeholder="Ví dụ: Tôi là sinh viên CNTT cần hỗ trợ học phí..."
-                        aria-label="Mô tả nhu cầu học bổng"
-                        disabled>
+                        placeholder="Ví dụ: Học bổng CNTT hoặc học bổng cho sinh viên có hoàn cảnh khó khăn..." value="<?= htmlspecialchars($keyword ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
-                    <button type="button"
+                    <button type="submit"
                         class="btn text-white flex-shrink-0 px-4"
-                        style="background:var(--primary);"
-                        disabled>
-                        <i class="bi bi-stars me-1"></i>
-                        Gợi ý
+                        style="background:var(--primary);">
+                        <i class="bi bi-search me-1"></i>
+                        Tìm kiếm
                     </button>
                 </div>
-            </div>
+            </form>
 
             <!-- Danh sách học bổng -->
             <div class="d-flex justify-content-between align-items-center mb-4">

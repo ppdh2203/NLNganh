@@ -169,13 +169,27 @@ class ProviderController extends Controller
 
         if ($data['required_year'] === '') {
             $data['required_year'] = null;
-        } elseif (
-            !ctype_digit($data['required_year']) ||
-            (int) $data['required_year'] < 1 ||
-            (int) $data['required_year'] > 20
-        ) {
-            http_response_code(422);
-            exit('Năm học phải là số nguyên từ 1 đến 20.');
+        } else {
+            $year = preg_replace('/\s+/', '', $data['required_year']);
+
+            $valid = false;
+
+            if (preg_match('/^([1-9]|1[0-9]|20)$/', $year)) {
+                $valid = true;
+            } elseif (preg_match('/^(>=|<=)([1-9]|1[0-9]|20)$/', $year)) {
+                $valid = true;
+            } elseif (preg_match('/^([1-9]|1[0-9]|20)-([1-9]|1[0-9]|20)$/', $year, $m)) {
+                $valid = (int) $m[1] <= (int) $m[2];
+            } elseif (preg_match('/^([1-9]|1[0-9]|20)(,([1-9]|1[0-9]|20))+$/', $year)) {
+                $valid = true;
+            }
+
+            if (!$valid) {
+                http_response_code(422);
+                exit('Năm học không hợp lệ. Ví dụ: 2, 2,3,4, >=2, <=3 hoặc 2-4.');
+            }
+
+            $data['required_year'] = $year;
         }
 
         if ($data['required_major'] === '') {
@@ -232,6 +246,9 @@ class ProviderController extends Controller
                 'is_required' => $isRequired === '1'
             ];
         }
+
+        error_log('So giay to nhan duoc: ' . count($documentNames));
+        error_log('So giay to hop le: ' . count($documents));
 
         try {
             Scholarship::create(
@@ -449,13 +466,27 @@ class ProviderController extends Controller
 
         if ($data['required_year'] === '') {
             $data['required_year'] = null;
-        } elseif (
-            !ctype_digit($data['required_year']) ||
-            (int) $data['required_year'] < 1 ||
-            (int) $data['required_year'] > 20
-        ) {
-            http_response_code(422);
-            exit('Năm học phải là số nguyên từ 1 đến 20.');
+        } else {
+            $year = preg_replace('/\s+/', '', $data['required_year']);
+
+            $valid = false;
+
+            if (preg_match('/^([1-9]|1[0-9]|20)$/', $year)) {
+                $valid = true;
+            } elseif (preg_match('/^(>=|<=)([1-9]|1[0-9]|20)$/', $year)) {
+                $valid = true;
+            } elseif (preg_match('/^([1-9]|1[0-9]|20)-([1-9]|1[0-9]|20)$/', $year, $m)) {
+                $valid = (int) $m[1] <= (int) $m[2];
+            } elseif (preg_match('/^([1-9]|1[0-9]|20)(,([1-9]|1[0-9]|20))+$/', $year)) {
+                $valid = true;
+            }
+
+            if (!$valid) {
+                http_response_code(422);
+                exit('Năm học không hợp lệ. Ví dụ: 2, 2,3,4, >=2, <=3 hoặc 2-4.');
+            }
+
+            $data['required_year'] = $year;
         }
 
         if ($data['required_major'] === '') {

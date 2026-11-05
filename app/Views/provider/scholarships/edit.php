@@ -99,10 +99,11 @@ $id = (int) $scholarship['scholarship_id'];
 
                 <div class="col-md-4">
                     <label class="form-label">Năm học</label>
-                    <input type="number"
+                    <input type="text"
                         name="required_year"
                         class="form-control"
-                        min="1" step="1"
+                        maxlength="50"
+                        placeholder="Ví dụ: 2,3,4 hoặc >=2"
                         value="<?= $e($requirements['required_year'] ?? '') ?>">
                 </div>
 

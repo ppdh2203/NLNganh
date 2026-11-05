@@ -69,7 +69,8 @@ declare(strict_types=1);
                 <div class="col-md-4">
                     <label class="form-label">Năm học</label>
                     <input type="text" name="required_year"
-                        class="form-control" placeholder="Ví dụ: Năm 2, năm 3">
+                        class="form-control" maxlength="50"
+                        placeholder="Ví dụ: 2,3,4 hoặc >=2">
                 </div>
 
                 <div class="col-md-4">
@@ -181,5 +182,14 @@ declare(strict_types=1);
 
         addButton.addEventListener('click', addDocument);
         addDocument();
+
+        document.querySelector('form').addEventListener('submit', function() {
+            const names = [...this.querySelectorAll('input[name^="document_name["]')];
+            console.log('Số giấy tờ gửi đi:', names.length);
+            console.table(names.map(input => ({
+                name: input.name,
+                value: input.value
+            })));
+        });
     });
 </script>
