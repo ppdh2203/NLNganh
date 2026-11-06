@@ -129,3 +129,19 @@ $router->post(
     '/profile',
     '\App\Controllers\StudentController@updateProfile'
 );
+
+
+$router->get(
+    '/saved-scholarships',
+    '\App\Controllers\SavedScholarshipController@index'
+);
+
+$router->post(
+    '/scholarships/{id:\d+}/save',
+    '\App\Controllers\SavedScholarshipController@save'
+);
+
+$router->post(
+    '/scholarships/{id:\d+}/unsave',
+    '\App\Controllers\SavedScholarshipController@remove'
+);
