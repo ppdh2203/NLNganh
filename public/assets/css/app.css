@@ -774,6 +774,25 @@ body {
     }
 }
 
+/* Chỉ áp dụng cho banner trang Khám phá học bổng */
+#scholarshipBanner .carousel-item {
+    height: 200px;
+    position: relative;
+}
+
+#scholarshipBanner .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 768px) {
+    #scholarshipBanner .carousel-item {
+        height: 180px;
+    }
+}
+
 /* Home phần 2 card link tới register*/
  /* =========================
    HOME - ROLE OPTIONS

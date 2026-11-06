@@ -1,14 +1,85 @@
 <main>
     <!-- Giới thiệu trang học bổng -->
-    <section class="py-5 text-center" style="background:var(--light-blue);">
-        <div class="container">
-            <h1 class="fw-bold mb-3">Khám phá học bổng</h1>
-            <p class="mb-0" style="color:var(--text-muted);">
-                Khám phá những cơ hội học bổng phù hợp,
-                đồng hành cùng bạn trên hành trình học tập.
-            </p>
+
+    <!-- Banner trang khám phá học bổng -->
+    <section class="scholarship-banner">
+        <div id="scholarshipBanner"
+            class="carousel slide carousel-fade"
+            data-bs-ride="carousel"
+            data-bs-interval="5000">
+
+            <div class="carousel-indicators">
+                <button type="button"
+                    data-bs-target="#scholarshipBanner"
+                    data-bs-slide-to="0"
+                    class="active"
+                    aria-current="true"
+                    aria-label="Banner 1"></button>
+
+                <button type="button"
+                    data-bs-target="#scholarshipBanner"
+                    data-bs-slide-to="1"
+                    aria-label="Banner 2"></button>
+            </div>
+
+            <div class="carousel-inner">
+
+                <!-- Banner 3 -->
+                <div class="carousel-item active">
+                    <img src="/assets/images/banner3.jpg"
+                        class="d-block w-100"
+                        alt="Khám phá học bổng">
+
+                    <div class="scholarship-banner-overlay"></div>
+
+                    <div class="carousel-caption scholarship-banner-caption">
+                        <h1>Khám phá học bổng</h1>
+                        <p>
+                            Khám phá những cơ hội học bổng phù hợp,
+                            đồng hành cùng bạn trên hành trình học tập.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Banner 4 -->
+                <div class="carousel-item">
+                    <img src="/assets/images/banner4.jpg"
+                        class="d-block w-100"
+                        alt="Cơ hội học bổng dành cho sinh viên">
+
+                    <div class="scholarship-banner-overlay"></div>
+
+                    <div class="carousel-caption scholarship-banner-caption">
+                        <h2>Chắp cánh ước mơ</h2>
+                        <p>
+                            Tiếp cận những cơ hội học bổng,
+                            phát triển năng lực và chinh phục tương lai.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#scholarshipBanner"
+                data-bs-slide="prev"
+                aria-label="Ảnh trước">
+                <span class="carousel-control-prev-icon"
+                    aria-hidden="true"></span>
+            </button>
+
+            <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#scholarshipBanner"
+                data-bs-slide="next"
+                aria-label="Ảnh tiếp theo">
+                <span class="carousel-control-next-icon"
+                    aria-hidden="true"></span>
+            </button>
         </div>
     </section>
+
 
     <section class="py-5">
         <div class="container">
