@@ -144,9 +144,11 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 
                         <div id="yearFeedback" class="small mt-2"></div>
 
+
                         <?php if (
                             $requirements !== false &&
-                            $requirements['required_year'] !== null
+                            isset($requirements['required_year']) &&
+                            (int) $requirements['required_year'] > 0
                         ): ?>
                             <div class="form-text">
                                 Năm học yêu cầu:
@@ -154,7 +156,13 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                                     <?= (int) $requirements['required_year'] ?>
                                 </strong>
                             </div>
+                        <?php else: ?>
+                            <div class="form-text">
+                                Năm học yêu cầu:
+                                <strong>Không giới hạn</strong>
+                            </div>
                         <?php endif; ?>
+
                     </div>
                 </div>
 
@@ -454,10 +462,6 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                                         JSON_HEX_QUOT
                                 ) ?>;
 
-        // Tạo vùng thông báo GPA
-        const gpaFeedback = document.createElement('div');
-        gpaFeedback.className = 'small mt-2';
-        gpaInput.parentElement.appendChild(gpaFeedback);
 
         function normalizeMajor(value) {
             return value.normalize('NFD')
@@ -468,18 +472,19 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                 .replace(/\s+/g, ' ');
         }
 
-        function showFeedback(input, element, valid, message) {
+
+        function showFeedback(input, element, valid) {
             input.classList.remove('is-valid', 'is-invalid');
-            element.className = 'small mt-2';
-            element.textContent = '';
+
+            if (element) {
+                element.textContent = '';
+            }
 
             if (valid === null) return;
 
-            input.classList.add(valid ? 'is-valid' : 'is-invalid');
-            element.classList.add(
-                valid ? 'text-success' : 'text-danger'
+            input.classList.add(
+                valid ? 'is-valid' : 'is-invalid'
             );
-            element.textContent = message;
         }
 
         function validateConditions() {
@@ -496,23 +501,29 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                     gpa >= Number(requiredGpa)
                 );
 
-            showFeedback(
-                gpaInput,
-                gpaFeedback,
-                gpaText === '' ? null : gpaValid,
-                gpaValid ?
-                'GPA đáp ứng yêu cầu.' :
-                'GPA không đáp ứng yêu cầu học bổng.'
-            );
+            gpaInput.classList.remove('is-valid', 'is-invalid');
+
+            if (gpaText !== '') {
+                gpaInput.classList.add(
+                    gpaValid ? 'is-valid' : 'is-invalid'
+                );
+            }
 
             // Kiểm tra năm học
             const year = yearInput.value;
 
+
+            const hasYearRequirement =
+                requiredYear !== null &&
+                requiredYear !== '' &&
+                Number(requiredYear) > 0;
+
             const yearValid = year !== '' &&
                 (
-                    requiredYear === null ||
+                    !hasYearRequirement ||
                     Number(year) === Number(requiredYear)
                 );
+
 
             showFeedback(
                 yearInput,
@@ -537,19 +548,41 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                     allowedMajors.includes(major)
                 );
 
+            // Kiểm tra các file PDF bắt buộc
+            const fileInputs = form.querySelectorAll('.application-pdf');
+
+            const documentsValid = Array.from(fileInputs).every(input => {
+                const file = input.files[0];
+
+                if (!file) {
+                    return !input.required;
+                }
+
+                return file.name.toLowerCase().endsWith('.pdf') &&
+                    file.size > 0 &&
+                    file.size <= 5 * 1024 * 1024;
+            });
+
+            // Kiểm tra đã tích xác nhận
+            const confirmValid =
+                document.getElementById('confirmApplication').checked;
             showFeedback(
                 majorInput,
                 majorFeedback,
-                major === '' ? null : majorValid,
-                majorValid ?
-                'Ngành học đáp ứng yêu cầu.' :
-                'Ngành học không phù hợp với yêu cầu học bổng.'
+                major === '' ? null : majorValid
             );
-
             // Chỉ hiển thị nút khi cả ba điều kiện đều đạt
 
-            const isEligible = gpaValid && yearValid && majorValid;
+            const isEligible =
+                gpaValid &&
+                yearValid &&
+                majorValid &&
+                documentsValid &&
+                confirmValid;
 
+            submitButton.disabled = !isEligible;
+            submitButton.style.opacity = isEligible ? '1' : '0.45';
+            submitButton.style.cursor = isEligible ? 'pointer' : 'not-allowed';
             submitButton.disabled = !isEligible;
 
             submitButton.style.opacity = isEligible ? '1' : '0.45';
@@ -561,6 +594,13 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
         yearInput.addEventListener('change', validateConditions);
         majorInput.addEventListener('input', validateConditions);
 
+
+        document.querySelectorAll('.application-pdf').forEach(input => {
+            input.addEventListener('change', validateConditions);
+        });
+
+        document.getElementById('confirmApplication')
+            .addEventListener('change', validateConditions);
         validateConditions();
     });
 </script>

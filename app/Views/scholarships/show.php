@@ -100,14 +100,32 @@
                             <span class="badge rounded-pill px-3 py-2" style="color:var(--primary-dark);background:var(--light-blue);">Accepting Applications</span>
                         </div>
 
+
                         <?php if (($_SESSION['user_role'] ?? '') === 'Student'): ?>
 
-                            <a href="/scholarships/<?= (int) $scholarship['scholarship_id'] ?>/apply"
-                                class="btn w-100 text-white fw-semibold py-2"
-                                style="background:var(--primary);">
-                                <i class="bi bi-send me-2"></i>
-                                Nộp hồ sơ
-                            </a>
+                            <?php if (!empty($hasApplied)): ?>
+
+                                <button
+                                    type="button"
+                                    class="btn w-100 fw-semibold py-2 text-white"
+                                    style="background:var(--primary); opacity:1; cursor:not-allowed;"
+                                    disabled>
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    Đã nộp hồ sơ
+                                </button>
+
+                            <?php else: ?>
+
+                                <a
+                                    href="/scholarships/<?= (int) $scholarship['scholarship_id'] ?>/apply"
+                                    class="btn w-100 text-white fw-semibold py-2"
+                                    style="background:var(--primary);">
+                                    <i class="bi bi-send me-2"></i>
+                                    Nộp hồ sơ
+                                </a>
+
+                            <?php endif; ?>
+
 
                         <?php elseif (empty($_SESSION['user_id'])): ?>
 

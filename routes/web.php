@@ -192,3 +192,20 @@ $router->post(
     '/scholarships/{id:\d+}/apply',
     '\App\Controllers\ApplicationController@store'
 );
+
+// Danh sách hồ sơ đã nộp
+$router->get(
+    '/my-applications',
+    '\App\Controllers\ApplicationController@index'
+);
+
+// Chi tiết hồ sơ đã nộp
+$router->get(
+    '/my-applications/{id:\d+}',
+    '\App\Controllers\ApplicationController@show'
+);
+
+$router->get(
+    '/my-applications/(\d+)/documents/(\d+)',
+    '\App\Controllers\ApplicationController@viewDocument'
+);

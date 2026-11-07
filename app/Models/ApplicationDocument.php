@@ -53,33 +53,28 @@ class ApplicationDocument
 
 
     // Lấy các tài liệu thuộc một hồ sơ
-    public static function getByApplication(
-        int $applicationId,
-        int $userId
-    ): array {
-        $db = Database::connect();
+
+    public static function getByApplication(int $applicationId): array
+    {
+        $db = \App\Core\Database::connect();
 
         $stmt = $db->prepare("
-            SELECT
-                ad.doc_id,
-                ad.doc_name,
-                ad.file_url,
-                ad.doc_type,
-                ad.uploaded_at,
-                ad.required_document_id
-            FROM application_documents ad
-            INNER JOIN applications a
-                ON a.application_id = ad.application_id
-            WHERE ad.application_id = :application_id
-              AND a.user_id = :user_id
-            ORDER BY ad.doc_id ASC
-        ");
+        SELECT
+            doc_id,
+            application_id,
+            doc_name,
+            file_url,
+            doc_type,
+            uploaded_at
+        FROM application_documents
+        WHERE application_id = :application_id
+        ORDER BY doc_id ASC
+    ");
 
         $stmt->execute([
-            'application_id' => $applicationId,
-            'user_id' => $userId
+            'application_id' => $applicationId
         ]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

@@ -199,6 +199,32 @@ class ApplicationController extends Controller
 
         $requirements = Scholarship::getRequirements($scholarshipId);
 
+
+        $requiredYear = $requirements !== false
+            ? (int) ($requirements['required_year'] ?? 0)
+            : 0;
+
+        // 0 hoặc NULL nghĩa là không giới hạn năm học
+        if ($requiredYear > 0 && $studentYear !== $requiredYear) {
+            $this->redirectToForm(
+                $scholarshipId,
+                'Năm học không phù hợp với yêu cầu học bổng.'
+            );
+        }
+
+
+        $requiredGpa = $requirements !== false
+            ? (float) ($requirements['required_gpa'] ?? 0)
+            : 0;
+
+        if ($requiredGpa > 0 && $studentGpa < $requiredGpa) {
+            $this->redirectToForm(
+                $scholarshipId,
+                'GPA không đáp ứng yêu cầu tối thiểu của học bổng.'
+            );
+        }
+
+
         $requiredMajor = $requirements !== false
             ? trim((string) ($requirements['required_major'] ?? ''))
             : '';
@@ -507,5 +533,122 @@ class ApplicationController extends Controller
                     . 'Vui lòng kiểm tra lại và thử lần nữa.'
             );
         }
+    }
+
+    // Danh sách hồ sơ đã nộp của Student
+    public function index(): void
+    {
+        $user = $this->requireActiveUser('Student');
+
+        $applications = Application::getByStudent(
+            (int) $user['user_id']
+        );
+
+        $this->view('applications/index', [
+            'applications' => $applications
+        ]);
+    }
+
+
+    public function viewDocument(string $id, string $docId): void
+    {
+        $user = $this->requireActiveUser('Student');
+
+        if (
+            !ctype_digit($id) ||
+            !ctype_digit($docId) ||
+            (int) $id <= 0 ||
+            (int) $docId <= 0
+        ) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $application = Application::findById(
+            (int) $id,
+            (int) $user['user_id']
+        );
+
+        if ($application === false) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $documents = ApplicationDocument::getByApplication(
+            (int) $application['application_id']
+        );
+
+        $document = null;
+
+        foreach ($documents as $item) {
+            if ((int) $item['doc_id'] === (int) $docId) {
+                $document = $item;
+                break;
+            }
+        }
+
+        if ($document === null) {
+            $this->sendNotFound();
+            return;
+        }
+
+        // Chỉ chấp nhận tên file PDF do hệ thống tạo
+        $fileUrl = (string) $document['file_url'];
+
+        if (!preg_match(
+            '/^applications\/[a-f0-9]{32}\.pdf$/',
+            $fileUrl
+        )) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $filePath = $this->uploadDirectory()
+            . '/' . basename($fileUrl);
+
+        if (!is_file($filePath) || !is_readable($filePath)) {
+            $this->sendNotFound();
+            return;
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="document.pdf"');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: private, no-store');
+        header('Content-Length: ' . filesize($filePath));
+
+        readfile($filePath);
+        exit;
+    }
+
+
+    // Chi tiết một hồ sơ đã nộp
+    public function show(string $id): void
+    {
+        $user = $this->requireActiveUser('Student');
+
+        if (!ctype_digit($id) || (int) $id <= 0) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $application = Application::findById(
+            (int) $id,
+            (int) $user['user_id']
+        );
+
+        if ($application === false) {
+            $this->sendNotFound();
+            return;
+        }
+
+        $uploadedDocuments = ApplicationDocument::getByApplication(
+            (int) $application['application_id']
+        );
+
+        $this->view('applications/show', [
+            'application' => $application,
+            'uploadedDocuments' => $uploadedDocuments
+        ]);
     }
 }
