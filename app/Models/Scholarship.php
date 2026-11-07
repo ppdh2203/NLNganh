@@ -170,14 +170,22 @@ class Scholarship
     {
         $db = Database::connect();
 
+
         $sql = "
-            SELECT rd.document_name, rd.description, rd.is_required
+            SELECT
+                rd.required_documents_id,
+                rd.document_name,
+                rd.description,
+                rd.is_required
             FROM required_documents rd
             INNER JOIN application_requirements ar
                 ON rd.requirement_id = ar.requirement_id
             WHERE ar.scholarship_id = :scholarship_id
-            ORDER BY rd.is_required DESC, rd.required_documents_id ASC
+            ORDER BY
+                rd.is_required DESC,
+                rd.required_documents_id ASC
         ";
+
 
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':scholarship_id', $scholarshipId, PDO::PARAM_INT);

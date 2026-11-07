@@ -18,9 +18,32 @@ $router->get('/how-it-works', '\App\Controllers\HowItWorksController@index');
 
 
 // Danh sách học bổng
-$router->get('/scholarships', '\App\Controllers\ScholarshipController@index');
+
+ // ================= SCHOLARSHIPS =================
+
+// Danh sách học bổng
+$router->get(
+    '/scholarships',
+    '\App\Controllers\ScholarshipController@index'
+);
+
+// Hiển thị form nộp hồ sơ
+$router->get(
+    '/scholarships/(\d+)/apply',
+    '\App\Controllers\ApplicationController@create'
+);
+
+// Xử lý nộp hồ sơ
+$router->post(
+    '/scholarships/(\d+)/apply',
+    '\App\Controllers\ApplicationController@store'
+);
+
 // Chi tiết học bổng
-$router->get('/scholarships/{id:\d+}', '\App\Controllers\ScholarshipController@show');
+$router->get(
+    '/scholarships/(\d+)',
+    '\App\Controllers\ScholarshipController@show'
+);
 
 
 $router->get('/admin', '\App\Controllers\AdminController@index');
@@ -156,4 +179,16 @@ $router->get(
 $router->post(
     '/settings',
     '\App\Controllers\StudentController@updatePassword'
+);
+
+// Hiển thị form nộp hồ sơ
+$router->get(
+    '/scholarships/{id:\d+}/apply',
+    '\App\Controllers\ApplicationController@create'
+);
+
+// Xử lý nộp hồ sơ
+$router->post(
+    '/scholarships/{id:\d+}/apply',
+    '\App\Controllers\ApplicationController@store'
 );
