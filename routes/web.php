@@ -1,6 +1,10 @@
 <?php
-
 $router->get('/', '\App\Controllers\HomeController@index');
+// Xem tài liệu PDF của hồ sơ đã nộp
+$router->get(
+    '/my-applications/(\d+)/documents/(\d+)',
+    '\App\Controllers\ApplicationController@viewDocument'
+);
 
 $router->get('/register', '\App\Controllers\RegisterController@showRegister');
 $router->post('/register', '\App\Controllers\RegisterController@register');
@@ -19,7 +23,7 @@ $router->get('/how-it-works', '\App\Controllers\HowItWorksController@index');
 
 // Danh sách học bổng
 
- // ================= SCHOLARSHIPS =================
+// ================= SCHOLARSHIPS =================
 
 // Danh sách học bổng
 $router->get(
@@ -66,9 +70,15 @@ $router->post(
 
 // Xử lý khi người dùng truy cập đường dẫn không tồn tại
 $router->set404(function () {
-    $controller = new \App\Controllers\Controller();
-    $controller->sendNotFound();
+    header('Content-Type: text/plain; charset=utf-8');
+
+    echo "ROUTE KHONG KHOP\n";
+    echo "REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? '') . "\n";
+    echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? '') . "\n";
+    echo "SCRIPT_NAME: " . ($_SERVER['SCRIPT_NAME'] ?? '') . "\n";
+    exit;
 });
+
 
 // ================= PROVIDER =================
 
@@ -205,7 +215,4 @@ $router->get(
     '\App\Controllers\ApplicationController@show'
 );
 
-$router->get(
-    '/my-applications/(\d+)/documents/(\d+)',
-    '\App\Controllers\ApplicationController@viewDocument'
-);
+

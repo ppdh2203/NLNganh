@@ -1,5 +1,5 @@
 
-<main style="background:#f8f7fc; min-height:75vh;">
+<main class="applications-page-bg">
     <section class="py-5">
         <div class="container">
             <h2 class="fw-bold mb-2">Hồ sơ đã nộp</h2>

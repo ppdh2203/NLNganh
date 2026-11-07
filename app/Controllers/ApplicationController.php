@@ -595,21 +595,25 @@ class ApplicationController extends Controller
         // Chỉ chấp nhận tên file PDF do hệ thống tạo
         $fileUrl = (string) $document['file_url'];
 
+
         if (!preg_match(
-            '/^applications\/[a-f0-9]{32}\.pdf$/',
+            '~^applications/[a-f0-9]{32}\.pdf$~',
             $fileUrl
         )) {
             $this->sendNotFound();
             return;
         }
 
+
         $filePath = $this->uploadDirectory()
             . '/' . basename($fileUrl);
 
+
         if (!is_file($filePath) || !is_readable($filePath)) {
-            $this->sendNotFound();
-            return;
+            http_response_code(404);
+            exit('Không tìm thấy hoặc không đọc được file PDF.');
         }
+
 
         header('Content-Type: application/pdf');
         header('Content-Disposition: inline; filename="document.pdf"');

@@ -2104,6 +2104,7 @@ body.admin-body { margin: 0; background: var(--background); }
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* Dải tiêu đề riêng, không đặt lại ảnh nền */
@@ -2168,6 +2169,7 @@ body:has(.student-profile-bg) .site-footer {
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .student-saved-hero {
@@ -2253,6 +2255,7 @@ body:has(.student-saved-page) .site-footer {
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* Dải tiêu đề ngắn */
@@ -2346,4 +2349,67 @@ body:has(.student-settings-page) .site-footer {
     .student-settings-page .student-settings-hero {
         padding: 16px 0;
     }
+}
+
+
+/* Hover nút Xem PDF và Xem học bổng */
+.application-link-btn {
+    color: #6052db;
+    border: 1px solid #6052db;
+    background-color: transparent;
+    transition: all 0.2s ease;
+}
+
+.application-link-btn:hover {
+    background-color: #6052db;
+    border-color: #6052db;
+    color: #fff;
+}
+
+.application-link-btn:hover i {
+    color: #fff;
+}
+
+/* Nút Xem PDF và Xem học bổng */
+.application-link-btn {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+.application-link-btn:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.application-link-btn:hover i {
+    color: #fff;
+}
+
+/* Background trang Hồ sơ đã nộp */
+.applications-page-bg {
+    min-height: 75vh;
+    background-image:
+        linear-gradient(
+            rgba(248, 247, 252, 0.78),
+            rgba(248, 247, 252, 0.88)
+        ),
+        url('/assets/images/profile-bg.jpg');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Trang Hồ sơ đã nộp */
+.applications-page-bg {
+    min-height: calc(100vh - 130px);
+}
+
+/* Xóa khoảng trống giữa hình nền và footer */
+body:has(.applications-page-bg) .site-footer {
+    margin-top: 0 !important;
 }

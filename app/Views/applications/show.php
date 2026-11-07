@@ -1,4 +1,5 @@
 <?php
+
 /** @var array $application */
 /** @var array $uploadedDocuments */
 ?>
@@ -105,90 +106,87 @@
 
                 <h5 class="fw-bold mb-3">Ghi chú đã gửi</h5>
 
-                <div class="border rounded-3 p-3"
-                    style="background:#faf9ff; white-space:pre-line;">
+                <div class="border rounded-3 px-3 py-3"
+                    style="background:#faf9ff; line-height:1.6;">
                     <?= !empty($application['note'])
-                        ? htmlspecialchars(
+                        ? nl2br(htmlspecialchars(
                             $application['note'],
                             ENT_QUOTES,
                             'UTF-8'
-                        )
-                        : 'Không có ghi chú.' ?>
+                        ))
+                        : '<span class="text-muted">Không có ghi chú.</span>' ?>
                 </div>
+            </div>
 
 
-                <hr class="my-4">
+            <hr class="my-4">
 
-                <h5 class="fw-bold mb-3">
-                    <i class="bi bi-file-earmark-pdf me-2"
-                        style="color:var(--primary);"></i>
-                    Giấy tờ đã nộp
-                </h5>
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-file-earmark-pdf me-2"
+                    style="color:var(--primary);"></i>
+                Giấy tờ đã nộp
+            </h5>
 
-                <?php if (!empty($uploadedDocuments)): ?>
+            <?php if (!empty($uploadedDocuments)): ?>
 
-                    <div class="d-flex flex-column gap-3">
+                <div class="d-flex flex-column gap-3">
 
-                        <?php foreach ($uploadedDocuments as $document): ?>
+                    <?php foreach ($uploadedDocuments as $document): ?>
 
-                            <div class="border rounded-3 p-3
+                        <div class="border rounded-3 p-3
                         d-flex justify-content-between
                         align-items-center gap-3 flex-wrap">
 
-                                <div class="d-flex align-items-center gap-3">
-                                    <i class="bi bi-file-earmark-pdf fs-3"
-                                        style="color:var(--primary);"></i>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-file-earmark-pdf fs-3"
+                                    style="color:var(--primary);"></i>
 
-                                    <div>
-                                        <div class="fw-semibold">
-                                            <?= htmlspecialchars(
-                                                $document['doc_name'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>
-                                        </div>
+                                <div>
+                                    <div class="fw-semibold">
+                                        <?= htmlspecialchars(
+                                            $document['doc_name'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                                    </div>
 
-                                        <div class="text-muted small">
-                                            Tài liệu PDF
-                                        </div>
+                                    <div class="text-muted small">
+                                        Tài liệu PDF
                                     </div>
                                 </div>
-
-                                <a href="/my-applications/<?= (int) $application['application_id'] ?>/documents/<?= (int) $document['doc_id'] ?>"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="btn btn-sm fw-semibold"
-                                    style="border:1px solid var(--primary);
-                          color:var(--primary);">
-
-                                    <i class="bi bi-eye me-1"></i>
-                                    Xem PDF
-                                </a>
-
                             </div>
 
-                        <?php endforeach; ?>
+                            <a href="/my-applications/<?= (int) $application['application_id'] ?>/documents/<?= (int) $document['doc_id'] ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-sm fw-semibold application-link-btn">
 
-                    </div>
+                                <i class="bi bi-eye me-1"></i>
+                                Xem PDF
+                            </a>
 
-                <?php else: ?>
+                        </div>
 
-                    <p class="text-muted">
-                        Hồ sơ này không có tài liệu đính kèm.
-                    </p>
+                    <?php endforeach; ?>
 
-                <?php endif; ?>
-
-                <div class="mt-4">
-                    <a href="/scholarships/<?= (int) $application['scholarship_id'] ?>"
-                        class="btn fw-semibold"
-                        style="border:1px solid var(--primary);
-                              color:var(--primary);">
-                        Xem học bổng
-                    </a>
                 </div>
 
+            <?php else: ?>
+
+                <p class="text-muted">
+                    Hồ sơ này không có tài liệu đính kèm.
+                </p>
+
+            <?php endif; ?>
+
+            <div class="mt-4">
+                <a href="/scholarships/<?= (int) $application['scholarship_id'] ?>"
+                    class="btn fw-semibold application-link-btn">
+                    Xem học bổng
+                </a>
             </div>
+
+        </div>
         </div>
     </section>
 </main>
