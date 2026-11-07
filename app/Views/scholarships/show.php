@@ -102,10 +102,78 @@
                         <button type="button" class="btn w-100 text-white fw-semibold py-2" style="background:var(--primary);" disabled>
                             Apply Now
                         </button>
-                        <p class="text-muted small text-center mt-2 mb-0">Online applications will be available soon.</p>
+
+
+
+                        <?php if (($_SESSION['user_role'] ?? '') === 'Student'): ?>
+
+                            <form
+                                method="POST"
+                                action="/scholarships/<?= (int) $scholarship['scholarship_id'] ?>/<?= !empty($isSaved) ? 'unsave' : 'save' ?>"
+                                class="mt-3">
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+
+
+                                <button
+                                    type="submit"
+                                    class="btn scholarship-save-btn w-100 fw-semibold py-2">
+                                    <i class="bi <?= !empty($isSaved) ? 'bi-heart-fill' : 'bi-heart' ?> me-2"></i>
+                                    <?= !empty($isSaved) ? 'Bỏ lưu học bổng' : 'Lưu học bổng' ?>
+                                </button>
+
+                            </form>
+
+                        <?php elseif (empty($_SESSION['user_id'])): ?>
+
+                            <a href="/login" class="btn btn-outline-primary w-100 mt-3">
+                                <i class="bi bi-heart me-2"></i>
+                                Đăng nhập để lưu học bổng
+                            </a>
+
+                        <?php endif; ?>
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <?php if (!empty($message)): ?>
+        <div class="scholarship-toast-container">
+            <div
+                id="scholarshipToast"
+                class="toast scholarship-toast border-0"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                data-bs-delay="2000"
+                data-bs-autohide="true">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <span>
+                        <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const toastElement = document.getElementById('scholarshipToast');
+
+                if (toastElement && window.bootstrap?.Toast) {
+                    const toast = new bootstrap.Toast(toastElement, {
+                        delay: 2000,
+                        autohide: true
+                    });
+
+                    toast.show();
+                }
+            });
+        </script>
+    <?php endif; ?>
+
 </main>

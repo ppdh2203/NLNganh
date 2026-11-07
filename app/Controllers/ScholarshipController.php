@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Scholarship;
+use App\Models\SavedScholarship;
 
 class ScholarshipController extends Controller
 {
@@ -74,11 +75,33 @@ class ScholarshipController extends Controller
         $requirements = Scholarship::getRequirements($scholarshipId);
         $documents = Scholarship::getRequiredDocuments($scholarshipId);
 
+
+        $isSaved = false;
+
+        if (
+            !empty($_SESSION['user_id']) &&
+            ($_SESSION['user_role'] ?? '') === 'Student'
+        ) {
+            $isSaved = SavedScholarship::isSaved(
+                (int) $_SESSION['user_id'],
+                $scholarshipId
+            );
+        }
+
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $message = $_SESSION['saved_scholarship_message'] ?? null;
+        unset($_SESSION['saved_scholarship_message']);
+
         // Truyền dữ liệu sang giao diện chi tiết
         $this->view('scholarships/show', [
             'scholarship' => $scholarship,
             'requirements' => $requirements,
-            'documents' => $documents
+            'documents' => $documents,
+            'isSaved' => $isSaved,
+            'message' => $message
         ]);
     }
 }

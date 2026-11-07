@@ -2,7 +2,12 @@
     <div class="login-container">
         <?php
         $loginError = $_SESSION['login_error'] ?? null;
-        unset($_SESSION['login_error']);
+        $loginSuccess = $_SESSION['login_success_message'] ?? null;
+
+        unset(
+            $_SESSION['login_error'],
+            $_SESSION['login_success_message']
+        );
         ?>
         <!-- Tiêu đề -->
         <div class="login-header">
@@ -16,7 +21,7 @@
                 <span><?= htmlspecialchars((string)($loginError['message'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
             </div>
         <?php endif; ?>
-        
+
         <form action="/login" method="POST" class="login-form">
             <!-- Token bảo vệ form đăng nhập -->
             <input type="hidden"

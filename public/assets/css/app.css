@@ -2034,3 +2034,316 @@ body.admin-body { margin: 0; background: var(--background); }
         padding: 20px;
     }
 }
+
+
+
+/* Nút lưu học bổng */
+.scholarship-save-btn {
+    background-color: #fff;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    transition: all 0.2s ease;
+}
+
+.scholarship-save-btn:hover,
+.scholarship-save-btn:focus-visible {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+
+/* Thông báo lưu học bổng */
+.scholarship-toast-container {
+    position: fixed;
+    top: 85px;
+    right: 20px;
+    z-index: 1090;
+}
+
+.scholarship-toast {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 12px;
+    min-width: 260px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.scholarship-toast .toast-body {
+    padding: 14px 18px;
+    font-weight: 500;
+}
+
+@media (max-width: 576px) {
+    .scholarship-toast-container {
+        top: 75px;
+        right: 12px;
+        left: 12px;
+    }
+
+    .scholarship-toast {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+
+
+/* Một ảnh nền duy nhất cho toàn bộ trang */
+.student-profile.student-profile-bg {
+    padding: 0;
+    min-height: 100vh;
+
+    background-image:
+        linear-gradient(
+            rgba(248, 247, 255, 0.55),
+            rgba(248, 247, 255, 0.55)
+        ),
+        url('/assets/images/student-bg.jpg');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Dải tiêu đề riêng, không đặt lại ảnh nền */
+.student-profile-bg .student-profile-hero {
+    padding: 7px 0;
+    background: rgba(133, 117, 223, 0.18);
+}
+
+/* Phần nội dung hồ sơ */
+.student-profile-bg .student-profile-content {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* Các khung thông tin màu trắng */
+.student-profile-bg .student-profile-card {
+    background-color: rgba(255, 255, 255, 0.96);
+}
+
+/* Xóa khoảng trống trước footer */
+body:has(.student-profile-bg) .site-footer {
+    margin-top: 0 !important;
+}
+
+
+/* Chữ trắng trong dải tiêu đề Thông tin cá nhân */
+.student-profile-bg .student-profile-hero h1 {
+    color: #fff;
+}
+
+.student-profile-bg .student-profile-hero p {
+    color: #fff !important;
+}
+
+.student-profile-bg .student-profile-hero a {
+    color: #fff !important;
+}
+
+.student-profile-bg .student-profile-hero a:hover {
+    color: #eee9ff !important;
+}
+
+
+
+/* ==========================================
+   TRANG HỌC BỔNG ĐÃ LƯU
+   ========================================== */
+
+.student-saved-page {
+    min-height: calc(100vh - 130px); /* Trừ chiều cao header */
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+
+    background-image:
+        linear-gradient(
+            rgba(248, 247, 255, 0.55),
+            rgba(248, 247, 255, 0.55)
+        ),
+        url('/assets/images/save-bg.jpg');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.student-saved-hero {
+    padding: 7px 0;
+    background: rgba(166, 182, 203, 0.78);
+}
+
+.student-saved-hero h1,
+.student-saved-hero a {
+    color: #ffffff !important;
+}
+
+.student-saved-hero a:hover {
+    color: #dce2ea !important;
+}
+
+/* Nội dung co giãn để dòng tổng nằm sát cuối */
+.student-saved-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 0 20px;
+}
+
+.student-saved-content > .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.student-saved-page .scholarship-card {
+    background-color: rgba(255, 255, 255, 0.96);
+}
+
+.student-saved-page .bg-white {
+    background-color: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Luôn ở góc dưới bên phải, cách footer 20px */
+.student-saved-content .saved-total {
+    margin-top: auto;
+    padding-top: 30px;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+body:has(.student-saved-page) .site-footer {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 576px) {
+    .student-saved-page {
+        min-height: calc(100vh - 130px);
+    }
+
+    .student-saved-hero {
+        padding: 20px 0;
+    }
+
+    .student-saved-content {
+        padding: 25px 0 20px;
+    }
+}
+
+
+/* ==========================================
+   TRANG CÀI ĐẶT TÀI KHOẢN SINH VIÊN
+   ========================================== */
+
+.student-settings-page {
+    min-height: calc(100vh - 130px);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(248, 247, 255, 0.55),
+            rgba(248, 247, 255, 0.55)
+        ),
+        url('/assets/images/setting-bg.jpg');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Dải tiêu đề ngắn */
+.student-settings-hero {
+    padding: 7px 0;
+    background: rgba(206, 213, 236, 0.72);
+}
+
+/* Chữ trắng */
+.student-settings-hero h1,
+.student-settings-hero a {
+    color: #ffffff !important;
+}
+
+.student-settings-hero a:hover {
+    color: #eee9ff !important;
+}
+
+/* Nội dung */
+.student-settings-content {
+    flex: 1;
+    padding: 40px 0;
+}
+
+/* Hai khung thông tin */
+.student-settings-card {
+    background: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Bỏ khoảng cách thừa phía trên footer */
+body:has(.student-settings-page) .site-footer {
+    margin-top: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+
+    .student-settings-hero {
+        padding: 20px 0;
+    }
+
+    .student-settings-content {
+        padding: 25px 0;
+    }
+}
+
+
+/* ==========================================
+   BỎ DẢI MÀU TIÊU ĐỀ - 3 TRANG SINH VIÊN
+   ========================================== */
+
+/* 1. Trang thông tin cá nhân */
+.student-profile-bg .student-profile-hero {
+    background: transparent;
+    padding: 20px 0;
+}
+
+/* 2. Trang học bổng đã lưu */
+.student-saved-page .student-saved-hero {
+    background: transparent;
+    padding: 20px 0;
+}
+
+/* 3. Trang cài đặt tài khoản */
+.student-settings-page .student-settings-hero {
+    background: transparent;
+    padding: 20px 0;
+}
+
+/* Màu chữ tiêu đề và nút Quay lại */
+.student-profile-bg .student-profile-hero h1,
+.student-profile-bg .student-profile-hero a,
+.student-saved-page .student-saved-hero h1,
+.student-saved-page .student-saved-hero a,
+.student-settings-page .student-settings-hero h1,
+.student-settings-page .student-settings-hero a {
+    color: #303741 !important;
+}
+
+/* Hiệu ứng khi rê chuột vào Quay lại */
+.student-profile-bg .student-profile-hero a:hover,
+.student-saved-page .student-saved-hero a:hover,
+.student-settings-page .student-settings-hero a:hover {
+    color: var(--primary) !important;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .student-profile-bg .student-profile-hero,
+    .student-saved-page .student-saved-hero,
+    .student-settings-page .student-settings-hero {
+        padding: 16px 0;
+    }
+}

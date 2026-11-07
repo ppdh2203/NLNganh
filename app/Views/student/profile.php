@@ -7,61 +7,61 @@ declare(strict_types=1);
 /** @var string|null $error */
 
 $e = static fn($value): string =>
-    htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
 
 ?>
 
-<section class="student-profile">
-    <div class="container">
 
-        <!-- Tiêu đề -->
-        <div class="mb-4">
+<section class="student-profile student-profile-bg">
+
+    <!-- Dải tiêu đề riêng -->
+    <div class="student-profile-hero">
+        <div class="container">
             <a href="/" class="text-decoration-none text-secondary">
                 <i class="bi bi-arrow-left me-1"></i>
-                Quay lại trang chủ
+                Quay lại
             </a>
 
             <h1 class="h4 fw-bold mt-3 mb-2">
-                Thông tin cá nhân
+                THÔNG TIN CÁ NHÂN
             </h1>
 
-            <p class="text-muted mb-0">
-                Xem và cập nhật thông tin sinh viên của bạn.
-            </p>
         </div>
+    </div>
 
+    <div class="container student-profile-content">
         <!-- Thông báo -->
         <?php if (!empty($success)): ?>
             <div class="alert alert-success alert-dismissible fade show"
-                 role="alert">
+                role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>
                 <?= $e($success) ?>
 
                 <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Đóng"></button>
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Đóng"></button>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger alert-dismissible fade show"
-                 role="alert">
+                role="alert">
                 <i class="bi bi-exclamation-circle-fill me-2"></i>
                 <?= $e($error) ?>
 
                 <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Đóng"></button>
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Đóng"></button>
             </div>
         <?php endif; ?>
 
         <form action="/profile" method="POST" id="studentProfileForm">
 
             <input type="hidden"
-                   name="csrf_token"
-                   value="<?= $e($_SESSION['csrf_token'] ?? '') ?>">
+                name="csrf_token"
+                value="<?= $e($_SESSION['csrf_token'] ?? '') ?>">
 
             <!-- Thông tin tài khoản -->
             <div class="student-profile-card mb-4">
@@ -78,10 +78,10 @@ $e = static fn($value): string =>
                             Mã sinh viên
                         </label>
                         <input type="text"
-                               id="studentCode"
-                               class="form-control"
-                               value="<?= $e($student['student_code']) ?>"
-                               readonly>
+                            id="studentCode"
+                            class="form-control"
+                            value="<?= $e($student['student_code']) ?>"
+                            readonly>
                         <div class="form-text">
                             Mã sinh viên không thể thay đổi.
                         </div>
@@ -92,10 +92,10 @@ $e = static fn($value): string =>
                             Email đăng nhập
                         </label>
                         <input type="email"
-                               id="studentEmail"
-                               class="form-control"
-                               value="<?= $e($student['email']) ?>"
-                               readonly>
+                            id="studentEmail"
+                            class="form-control"
+                            value="<?= $e($student['email']) ?>"
+                            readonly>
                     </div>
 
                 </div>
@@ -116,12 +116,12 @@ $e = static fn($value): string =>
                             Họ và tên <span class="text-danger">*</span>
                         </label>
                         <input type="text"
-                               id="studentName"
-                               name="student_name"
-                               class="form-control"
-                               maxlength="255"
-                               value="<?= $e($student['student_name']) ?>"
-                               required>
+                            id="studentName"
+                            name="student_name"
+                            class="form-control"
+                            maxlength="255"
+                            value="<?= $e($student['student_name']) ?>"
+                            required>
                     </div>
 
                     <div class="col-md-6">
@@ -129,12 +129,12 @@ $e = static fn($value): string =>
                             Trường học <span class="text-danger">*</span>
                         </label>
                         <input type="text"
-                               id="studentSchool"
-                               name="student_school"
-                               class="form-control"
-                               maxlength="255"
-                               value="<?= $e($student['student_school']) ?>"
-                               required>
+                            id="studentSchool"
+                            name="student_school"
+                            class="form-control"
+                            maxlength="255"
+                            value="<?= $e($student['student_school']) ?>"
+                            required>
                     </div>
 
                     <div class="col-md-6">
@@ -142,12 +142,12 @@ $e = static fn($value): string =>
                             Ngành học <span class="text-danger">*</span>
                         </label>
                         <input type="text"
-                               id="studentMajor"
-                               name="student_major"
-                               class="form-control"
-                               maxlength="255"
-                               value="<?= $e($student['student_major']) ?>"
-                               required>
+                            id="studentMajor"
+                            name="student_major"
+                            class="form-control"
+                            maxlength="255"
+                            value="<?= $e($student['student_major']) ?>"
+                            required>
                     </div>
 
                     <div class="col-md-6">
@@ -155,13 +155,13 @@ $e = static fn($value): string =>
                             Khóa học <span class="text-danger">*</span>
                         </label>
                         <input type="number"
-                               id="studentCohort"
-                               name="student_cohort"
-                               class="form-control"
-                               min="1"
-                               max="4294967295"
-                               value="<?= $e($student['student_cohort']) ?>"
-                               required>
+                            id="studentCohort"
+                            name="student_cohort"
+                            class="form-control"
+                            min="1"
+                            max="4294967295"
+                            value="<?= $e($student['student_cohort']) ?>"
+                            required>
                     </div>
 
                     <div class="col-md-6">
@@ -169,12 +169,12 @@ $e = static fn($value): string =>
                             Số điện thoại <span class="text-danger">*</span>
                         </label>
                         <input type="tel"
-                               id="studentPhone"
-                               name="student_phone"
-                               class="form-control"
-                               maxlength="20"
-                               value="<?= $e($student['student_phone']) ?>"
-                               required>
+                            id="studentPhone"
+                            name="student_phone"
+                            class="form-control"
+                            maxlength="20"
+                            value="<?= $e($student['student_phone']) ?>"
+                            required>
                     </div>
 
                     <div class="col-md-6">
@@ -182,12 +182,12 @@ $e = static fn($value): string =>
                             Địa chỉ <span class="text-danger">*</span>
                         </label>
                         <input type="text"
-                               id="studentAddress"
-                               name="student_address"
-                               class="form-control"
-                               maxlength="255"
-                               value="<?= $e($student['student_address']) ?>"
-                               required>
+                            id="studentAddress"
+                            name="student_address"
+                            class="form-control"
+                            maxlength="255"
+                            value="<?= $e($student['student_address']) ?>"
+                            required>
                     </div>
 
                 </div>
@@ -196,16 +196,16 @@ $e = static fn($value): string =>
             <!-- Nút thao tác -->
             <div class="d-flex justify-content-end gap-2 mb-4">
                 <button type="button"
-                        id="cancelProfileBtn"
-                        class="btn btn-outline-secondary"
-                        disabled>
+                    id="cancelProfileBtn"
+                    class="btn btn-outline-secondary"
+                    disabled>
                     Hủy thay đổi
                 </button>
 
                 <button type="submit"
-                        id="saveProfileBtn"
-                        class="btn btn-student-primary"
-                        disabled>
+                    id="saveProfileBtn"
+                    class="btn btn-student-primary"
+                    disabled>
                     <i class="bi bi-check-lg me-1"></i>
                     Lưu thay đổi
                 </button>
@@ -216,42 +216,42 @@ $e = static fn($value): string =>
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('studentProfileForm');
-    const saveButton = document.getElementById('saveProfileBtn');
-    const cancelButton = document.getElementById('cancelProfileBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('studentProfileForm');
+        const saveButton = document.getElementById('saveProfileBtn');
+        const cancelButton = document.getElementById('cancelProfileBtn');
 
-    if (!form || !saveButton || !cancelButton) return;
+        if (!form || !saveButton || !cancelButton) return;
 
-    const fields = [
-        ...form.querySelectorAll(
-            'input[name]:not([type="hidden"])'
-        )
-    ];
+        const fields = [
+            ...form.querySelectorAll(
+                'input[name]:not([type="hidden"])'
+            )
+        ];
 
-    const originalValues = fields.map(field => field.value);
+        const originalValues = fields.map(field => field.value);
 
-    function checkChanges() {
-        const changed = fields.some(
-            (field, index) => field.value !== originalValues[index]
-        );
+        function checkChanges() {
+            const changed = fields.some(
+                (field, index) => field.value !== originalValues[index]
+            );
 
-        saveButton.disabled = !changed;
-        cancelButton.disabled = !changed;
-    }
+            saveButton.disabled = !changed;
+            cancelButton.disabled = !changed;
+        }
 
-    fields.forEach(field => {
-        field.addEventListener('input', checkChanges);
-    });
+        fields.forEach(field => {
+            field.addEventListener('input', checkChanges);
+        });
 
-    cancelButton.addEventListener('click', function () {
-        fields.forEach((field, index) => {
-            field.value = originalValues[index];
+        cancelButton.addEventListener('click', function() {
+            fields.forEach((field, index) => {
+                field.value = originalValues[index];
+            });
+
+            checkChanges();
         });
 
         checkChanges();
     });
-
-    checkChanges();
-});
 </script>

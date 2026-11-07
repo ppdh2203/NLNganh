@@ -145,3 +145,15 @@ $router->post(
     '/scholarships/{id:\d+}/unsave',
     '\App\Controllers\SavedScholarshipController@remove'
 );
+
+
+
+$router->get(
+    '/settings',
+    '\App\Controllers\StudentController@settings'
+);
+
+$router->post(
+    '/settings',
+    '\App\Controllers\StudentController@updatePassword'
+);
